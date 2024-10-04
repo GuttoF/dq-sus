@@ -8,7 +8,15 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
+PE/
+*.parquet
+*.csv
+data/raw/*.csv
+data/raw/*.parquet
+data/processed/*.csv
+data/processed/*.parquet
 
 # Thumbnails
 ._*
