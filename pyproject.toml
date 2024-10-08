@@ -42,6 +42,9 @@ streamlit = [
 eda = [
     "ydata-profiling>=4.10.0",
 ]
+describe = [
+    "ydata-profiling>=4.10.0",
+]
 
 [tool.taskipy.tasks]
 format = """

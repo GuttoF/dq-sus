@@ -545,6 +545,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+describe = [
+    { name = "ydata-profiling" },
+]
 doc = [
     { name = "mkdocs" },
     { name = "mkdocs-material" },
@@ -603,6 +606,7 @@ requires-dist = [
     { name = "sqlalchemy", specifier = ">=2.0.35" },
     { name = "streamlit", marker = "extra == 'streamlit'", specifier = ">=1.38.0" },
     { name = "streamlit-extras", marker = "extra == 'streamlit'", specifier = ">=0.4.7" },
+    { name = "ydata-profiling", marker = "extra == 'describe'", specifier = ">=4.10.0" },
     { name = "ydata-profiling", marker = "extra == 'eda'", specifier = ">=4.10.0" },
 ]
 

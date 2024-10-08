@@ -125,7 +125,7 @@ class NotificationsSchema(pa.DataFrameModel):
     NDUPLIC_N: Series[str] = pa.Field()
     DT_DIGITA: Series[str] = pa.Field()
     CS_FLXRET: Series[int] = pa.Field(le=1, ge=0)
-    FLXRECEBI: Series[str] = pa.Field()
+    FLXRECEBI: Series[str] = pa.Field(coerce = False, nullable=True)
     MIGRADO_W: Series[str] = pa.Field()
 
     class Config:
