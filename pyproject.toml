@@ -31,17 +31,6 @@ doc = [
     "mkdocstrings>=0.26.1",
     "mkdocstrings-python>=1.11.1",
 ]
-plot = [
-    "plotly>=5.24.1",
-    "seaborn>=0.13.2",
-]
-streamlit = [
-    "streamlit>=1.38.0",
-    "streamlit-extras>=0.4.7",
-]
-eda = [
-    "ydata-profiling>=4.10.0",
-]
 describe = [
     "ydata-profiling>=4.10.0",
 ]
