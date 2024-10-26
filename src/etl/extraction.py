@@ -53,7 +53,6 @@ def extract_to_duck(data: pd.DataFrame, file_path: Path = db_path) -> None:
         logging.error(f"Error: {e}")
 
 
-
 if __name__ == "__main__":
     data = extract_parquet("CHIK", 2023)
     extract_to_duck(data)
