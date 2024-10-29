@@ -1,17 +1,18 @@
-# Welcome to MkDocs
+# Data Quality SUS
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+## Data Quality Extraction Process
 
-## Commands
+```mermaid
+graph TD
+    A[Configurar Variáveis] --> B[Ler o Arquivo Parque do Pysus];
+    B --> V[Validação do Schema de Entrada];
+    B --> |Falha| X[Alerta de Erro];
+    V --> |Falha| X[Alerta de Erro];
+    V --> |Sucesso| C[Transformar];
+    C --> Y[Validação do Schema de Saída];
+    Y --> |Falha| Z[Alerta de Erro];
+    Y --> |Sucesso| D[Salvar no DuckDB];
+```
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+# Contrato de dados
+::: src.etl.extraction

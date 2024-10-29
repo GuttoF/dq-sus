@@ -1,1 +1,13 @@
-site_name: My Docs
+site_name: new-sus
+repo_url: https://github.com/GuttoF/dq-sus
+repo_name: dq-sus/src
+edit_uri: tree/main/docs
+
+theme:
+  name : material
+  language: pt-BR
+
+plugins:
+  - search
+  - mermaid2
+  - mkdocstrings
