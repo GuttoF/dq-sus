@@ -2,7 +2,7 @@ import logging
 import warnings
 from pathlib import Path
 from typing import Union
-
+import os
 import duckdb
 import pandas as pd
 from pysus.ftp.databases.sinan import SINAN
@@ -60,6 +60,7 @@ def extract_to_duck(data: pd.DataFrame, file_path: Path = db_path) -> None:
         duck_path = file_path / "db.db"
         if duck_path.exists():
             logging.info("Database already exists, it will be overwritten.")
+            os.remove(duck_path)
 
         conn = duckdb.connect(str(duck_path))
         conn.execute("CREATE TABLE IF NOT EXISTS sinan AS SELECT * FROM data")
