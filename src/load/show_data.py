@@ -15,6 +15,20 @@ db_path = Path(__file__).resolve().parents[1] / "data" / "db" / "db.db"
 def load_duckdb_data(
     table_name: str = "sinan", limit: Optional[int] = None
 ) -> pd.DataFrame:
+    """
+    Load data from a DuckDB database table into a pandas DataFrame.
+    Parameters:
+    table_name (str): The name of the table to load data from. Defaults to "sinan".
+    limit (Optional[int]): The maximum number of rows to load.
+        If None, all rows are loaded. Defaults to None.
+    Returns:
+    pd.DataFrame: A DataFrame containing the data loaded from the specified
+    DuckDB table.
+    Raises:
+    FileNotFoundError: If the DuckDB database file does not exist.
+    Exception: If there is an error loading data from the DuckDB database.
+    """
+
     if not db_path.exists():
         logging.error(f"Database not found at {db_path}")
         raise FileNotFoundError(f"Database not found at {db_path}")

@@ -1,8 +1,9 @@
 import logging
+import os
 import warnings
 from pathlib import Path
 from typing import Union
-import os
+
 import duckdb
 import pandas as pd
 from pysus.ftp.databases.sinan import SINAN
@@ -23,6 +24,22 @@ db_path.mkdir(parents=True, exist_ok=True)
 def extract_parquet(
     disease: str, years: Union[int, list[int]], file_path: Path = parquet_path
 ) -> list[Path]:
+    """
+    Extracts parquet files for a given disease and years.
+
+    Parameters:
+    disease (str): The disease to extract data for. Must be one of
+        ["ZIKA", "CHIK", "DENG"].
+    years (Union[int, list[int]]): The year or list of years to extract data for.
+    file_path (Path, optional): The directory path where parquet files are stored.
+        Defaults to parquet_path.
+
+    Returns:
+    list[Path]: A list of Paths to the extracted parquet files.
+
+    Raises:
+    ValueError: If an invalid disease is provided.
+    """
     valid = ["ZIKA", "CHIK", "DENG"]
     if disease not in valid:
         logging.error(
@@ -52,6 +69,28 @@ def extract_parquet(
 
 
 def insert_parquet_to_duck(files: list[Path], file_path: Path = db_path) -> None:
+    """
+    Inserts data from a list of Parquet files into a DuckDB database.
+
+    This function creates a new DuckDB database at the specified file path,
+    overwriting any existing database file. It then reads each Parquet file
+    in the provided list, and inserts the data into a table named 'sinan'
+    within the database. If the table already exists, the data is appended
+    to the table.
+
+    Args:
+        files (list[Path]): A list of Path objects pointing to the Parquet files
+            to be inserted.
+        file_path (Path, optional): The directory path where the DuckDB
+            database file will be created. Defaults to db_path.
+
+    Returns:
+        None
+
+    Raises:
+        Exception: If an error occurs during the database operations,
+        it logs the error and closes the connection.
+    """
     duck_path = file_path / "db.db"
     if duck_path.exists():
         logging.info("Database already exists, it will be overwritten.")
@@ -86,4 +125,3 @@ if __name__ == "__main__":
     years = [2022, 2023]
     files = extract_parquet("CHIK", years)
     insert_parquet_to_duck(files)
-

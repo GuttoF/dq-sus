@@ -19,6 +19,23 @@ json_paths = {
 
 
 def load_json(language: str = "english") -> Dict[str, str]:
+    """
+    Load a JSON file containing column mappings based on the specified language.
+
+    Args:
+        language (str): The language for which to load the column mappings.
+                        Supported values are 'english' and 'portuguese'.
+                        Defaults to 'english'.
+
+    Returns:
+        Dict[str, str]: A dictionary containing the column mappings.
+
+    Raises:
+        ValueError: If the specified language is not supported.
+        FileNotFoundError: If the JSON file for the specified language is not found.
+        json.JSONDecodeError: If there is an error decoding the JSON file.
+        Exception: For any other unexpected errors.
+    """
     if language not in json_paths:
         raise ValueError(
             "Language not supported. Please choose 'english' or 'portuguese'."
@@ -45,6 +62,28 @@ def load_json(language: str = "english") -> Dict[str, str]:
 def rename_db_columns(
     db_path: Path, table_name: str = "sinan", language: str = "english"
 ) -> None:
+    """
+    Renames columns in a DuckDB table based on a JSON mapping and removes
+    accents from column names.
+
+    Args:
+        db_path (Path): The path to the DuckDB database file.
+        table_name (str, optional): The name of the table to rename columns in.
+                                    Defaults to "sinan".
+        language (str, optional): The language to use for loading the JSON mapping.
+                                  Defaults to "english".
+
+    Raises:
+        FileNotFoundError: If the database file does not exist at the specified path.
+        Exception: If there is an error during the renaming process, the transaction
+                   is rolled back and the error is raised.
+
+    Notes:
+        - The function first removes accents from existing column names.
+        - Then, it renames columns based on the provided JSON mapping.
+        - If any columns in the JSON mapping are not found in the database,
+          a warning is logged.
+    """
     if not db_path.exists():
         logging.error(f"Database not found at {db_path}")
         raise FileNotFoundError(f"Database not found at {db_path}")
