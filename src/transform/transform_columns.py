@@ -54,30 +54,36 @@ def rename_db_columns(
     try:
         conn = duckdb.connect(str(db_path))
 
-        existing_columns = [
-            col[0] for col in conn.execute(f"DESCRIBE {table_name}").fetchall()
-        ]
+        conn.begin()
+
+        existing_columns = {
+            col[0]: unidecode.unidecode(col[0])
+            for col in conn.execute(f"DESCRIBE {table_name}").fetchall()
+        }
 
         unmapped_columns = []
 
-        for col in existing_columns:
-            normalized_col = unidecode.unidecode(col)
+        for col, normalized_col in existing_columns.items():
             if col != normalized_col:
-                rename_query = f'ALTER TABLE {table_name} RENAME COLUMN "{col}" TO "{normalized_col}"'
-                logging.info(f"Executing: {rename_query}")
-                conn.execute(rename_query)
+                conn.execute(
+                    f'ALTER TABLE {table_name} RENAME COLUMN "{col}" '
+                    f'TO "{normalized_col}"'
+                )
                 logging.info(
                     f"Removed accents from column '{col}' to '{normalized_col}'"
                 )
 
-        for normalized_old_name, new_name in column_mapping.items():
-            if normalized_old_name in existing_columns:
-                rename_query = f'ALTER TABLE {table_name} RENAME COLUMN "{normalized_old_name}" TO "{new_name}"'
-                logging.info(f"Executing: {rename_query}")
-                conn.execute(rename_query)
+        for old_name, new_name in column_mapping.items():
+            normalized_old_name = unidecode.unidecode(old_name)
+            if normalized_old_name in existing_columns.values():
+                conn.execute(
+                    f'ALTER TABLE {table_name} RENAME COLUMN "{normalized_old_name}" '
+                    f'TO "{new_name}"'
+                )
             else:
-                unmapped_columns.append(normalized_old_name)
+                unmapped_columns.append(old_name)
 
+        conn.commit()
         conn.close()
 
         if unmapped_columns:
@@ -92,6 +98,8 @@ def rename_db_columns(
 
     except Exception as e:
         logging.error(f"Error renaming columns in DuckDB: {e}")
+        if conn:
+            conn.rollback()
         raise
 
 
