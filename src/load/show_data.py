@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Optional
 
 import duckdb
 import pandas as pd
@@ -11,21 +12,25 @@ logging.basicConfig(
 db_path = Path(__file__).resolve().parents[1] / "data" / "db" / "db.db"
 
 
-def load_duckdb_data(table_name: str = "sinan") -> pd.DataFrame:
+def load_duckdb_data(
+    table_name: str = "sinan", limit: Optional[int] = None
+) -> pd.DataFrame:
     if not db_path.exists():
         logging.error(f"Database not found at {db_path}")
         raise FileNotFoundError(f"Database not found at {db_path}")
 
     try:
-        conn = duckdb.connect(str(db_path))
-        query = f"SELECT * FROM {table_name}"
-        logging.info(f"Loading data from table '{table_name}' in DuckDB database.")
+        with duckdb.connect(str(db_path)) as conn:
+            query = f"SELECT * FROM {table_name}"
+            if limit:
+                query += f" LIMIT {limit}"
+            logging.info(f"Loading data from table '{table_name}' in DuckDB database.")
 
-        data = conn.execute(query).fetchdf()
-        conn.close()
+            data_arrow = conn.execute(query).fetch_arrow_table()
+            data: pd.DataFrame = data_arrow.to_pandas()
 
-        logging.info("Data loaded successfully.")
-        return data
+            logging.info("Data loaded successfully.")
+            return data
 
     except Exception as e:
         logging.error(f"Error loading data from DuckDB: {e}")
@@ -33,6 +38,5 @@ def load_duckdb_data(table_name: str = "sinan") -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    print(db_path)
-    data = load_duckdb_data("sinan")
+    data = load_duckdb_data("sinan", limit=100)
     print(data.head())
