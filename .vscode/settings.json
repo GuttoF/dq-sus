@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "extraction",
-        "load"
+        "load",
+        "transformation"
     ]
 }

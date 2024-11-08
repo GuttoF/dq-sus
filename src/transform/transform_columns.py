@@ -63,7 +63,7 @@ def rename_db_columns(
         for col in existing_columns:
             normalized_col = unidecode.unidecode(col)
             if col != normalized_col:
-                rename_query = f'RENAME COLUMN "{col}" TO "{normalized_col}"'
+                rename_query = f'ALTER TABLE {table_name} RENAME COLUMN "{col}" TO "{normalized_col}"'
                 logging.info(f"Executing: {rename_query}")
                 conn.execute(rename_query)
                 logging.info(
@@ -72,7 +72,7 @@ def rename_db_columns(
 
         for normalized_old_name, new_name in column_mapping.items():
             if normalized_old_name in existing_columns:
-                rename_query = f'RENAME COLUMN "{normalized_old_name}" TO "{new_name}"'
+                rename_query = f'ALTER TABLE {table_name} RENAME COLUMN "{normalized_old_name}" TO "{new_name}"'
                 logging.info(f"Executing: {rename_query}")
                 conn.execute(rename_query)
             else:
