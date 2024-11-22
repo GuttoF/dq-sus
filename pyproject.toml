@@ -1,5 +1,5 @@
 [project]
-name = "dq-sus"
+name = "dq_sus"
 version = "0.1.0"
 description = "Data Quality in Pysus."
 
@@ -16,7 +16,6 @@ dependencies = [
     "pydantic>=2.9.2",
     "pysus>=0.14.3",
     "pytest>=8.3.3",
-    "sqlalchemy>=2.0.35",
 ]
 
 [project.optional-dependencies]
@@ -27,9 +26,7 @@ doc = [
     "mkdocstrings>=0.26.1",
     "mkdocstrings-python>=1.11.1",
 ]
-describe = [
-    "ydata-profiling>=4.10.0",
-]
+describe = []
 
 [tool.taskipy.tasks]
 format = """

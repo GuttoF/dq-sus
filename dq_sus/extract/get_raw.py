@@ -1,28 +1,19 @@
 import logging
 import os
-import warnings
 from pathlib import Path
 from typing import Union
-
 import duckdb
 import pandas as pd
 from pysus.ftp.databases.sinan import SINAN
-
-warnings.filterwarnings("ignore", category=SyntaxWarning, module="stringcase")
+from dq_sus.utils.config import PARQUET_PATH, DB_PATH
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-parquet_path = Path(__file__).resolve().parents[1] / "data" / "parquet"
-parquet_path.mkdir(parents=True, exist_ok=True)
-
-db_path = Path(__file__).resolve().parents[1] / "data" / "db"
-db_path.mkdir(parents=True, exist_ok=True)
-
 
 def extract_parquet(
-    disease: str, years: Union[int, list[int]], file_path: Path = parquet_path
+    disease: str, years: Union[int, list[int]], file_path: Path = PARQUET_PATH
 ) -> list[Path]:
     """
     Extracts parquet files for a given disease and years.
@@ -32,7 +23,7 @@ def extract_parquet(
         ["ZIKA", "CHIK", "DENG"].
     years (Union[int, list[int]]): The year or list of years to extract data for.
     file_path (Path, optional): The directory path where parquet files are stored.
-        Defaults to parquet_path.
+        Defaults to PARQUET_PATH.
 
     Returns:
     list[Path]: A list of Paths to the extracted parquet files.
@@ -40,13 +31,15 @@ def extract_parquet(
     Raises:
     ValueError: If an invalid disease is provided.
     """
-    valid = ["ZIKA", "CHIK", "DENG"]
-    if disease not in valid:
+    valid_diseases = ["ZIKA", "CHIK", "DENG"]
+    if disease not in valid_diseases:
         logging.error(
-            f"Invalid disease '{disease}' provided. Only {valid} are supported."
+            f"Invalid disease '{disease}' provided. Only {valid_diseases} "
+            "are supported."
         )
         raise ValueError(
-            f"Invalid disease '{disease}'. Please use one of the following: {valid}"
+            f"Invalid disease '{disease}'. Please use one of the following: "
+            f"{valid_diseases}"
         )
 
     if isinstance(years, int):
@@ -54,21 +47,21 @@ def extract_parquet(
 
     file_paths = []
     for year in years:
-        year_str = str(year)[2:]
-        file_name = file_path / f"{disease}BR{year_str}.parquet"
+        year_suffix = str(year)[2:]
+        file_name = file_path / f"{disease}BR{year_suffix}.parquet"
 
         if not file_name.exists():
             sinan = SINAN().load()
             file = sinan.get_files(disease, year)
             sinan.download(file, local_dir=str(file_path))
-            logging.info(f"File saved in {file_path}")
+            logging.info(f"File saved in {file_name}")
 
         file_paths.append(file_name)
 
     return file_paths
 
 
-def insert_parquet_to_duck(files: list[Path], file_path: Path = db_path) -> None:
+def insert_parquet_to_duck(files: list[Path], file_path: Path = DB_PATH) -> None:
     """
     Inserts data from a list of Parquet files into a DuckDB database.
 
@@ -82,7 +75,7 @@ def insert_parquet_to_duck(files: list[Path], file_path: Path = db_path) -> None
         files (list[Path]): A list of Path objects pointing to the Parquet files
             to be inserted.
         file_path (Path, optional): The directory path where the DuckDB
-            database file will be created. Defaults to db_path.
+            database file will be created. Defaults to DB_PATH.
 
     Returns:
         None

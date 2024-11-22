@@ -2,6 +2,7 @@
     "conventionalCommits.scopes": [
         "extraction",
         "load",
-        "transformation"
+        "transformation",
+        "module"
     ]
 }

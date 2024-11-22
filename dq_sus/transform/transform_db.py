@@ -1,11 +1,24 @@
+import logging
+from dq_sus.utils.config import DB_PATH
+import duckdb
 from pathlib import Path
 
-import duckdb
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
-db_path = Path(__file__).resolve().parents[1] / "data" / "db" / "db.db"
+def transform_db(db_path: Path = DB_PATH) -> None:
+    """
+    Transforms the database by creating new tables with normalized structures
+    and dropping the original raw table.
 
+    Args:
+        db_path (str): Path to the DuckDB database file. Defaults to DB_PATH.
 
-def transform_db(db_path: Path = db_path) -> None:
+    Returns:
+        None
+    """
     create_tables_queries = [
         """
         CREATE TABLE sinan_id AS
@@ -189,11 +202,18 @@ def transform_db(db_path: Path = db_path) -> None:
         """,
     ]
 
-    conn = duckdb.connect(str(db_path))
-    for query in create_tables_queries:
-        conn.execute(query)
+    try:
+        conn = duckdb.connect(str(db_path))
+        for query in create_tables_queries:
+            logging.info(f"Executing query:\n{query}")
+            conn.execute(query)
 
-    conn.execute("DROP TABLE IF EXISTS sinan")
-    conn.close()
+        conn.execute("DROP TABLE IF EXISTS sinan")
+        conn.close()
 
-    print("Database transformed successfully!")
+        logging.info("Database transformed successfully!")
+    except Exception as e:
+        logging.error(f"Error during database transformation: {e}")
+        if conn:
+            conn.close()
+        raise
