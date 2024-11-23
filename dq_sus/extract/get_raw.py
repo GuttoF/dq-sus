@@ -2,10 +2,12 @@ import logging
 import os
 from pathlib import Path
 from typing import Union
+
 import duckdb
 import pandas as pd
 from pysus.ftp.databases.sinan import SINAN
-from dq_sus.utils.config import PARQUET_PATH, DB_PATH
+
+from dq_sus.utils.config import DB_PATH, PARQUET_PATH
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -84,10 +86,16 @@ def insert_parquet_to_duck(files: list[Path], file_path: Path = DB_PATH) -> None
         Exception: If an error occurs during the database operations,
         it logs the error and closes the connection.
     """
-    duck_path = file_path / "db.db"
+    duck_path = file_path
+    if not duck_path.parent.exists():
+        logging.info(f"Directory {duck_path.parent} does not exist. Creating it.")
+        duck_path.parent.mkdir(parents=True, exist_ok=True)
+
     if duck_path.exists():
-        logging.info("Database already exists, it will be overwritten.")
+        logging.info(f"Database already exists at {duck_path}, it will be overwritten.")
         os.remove(duck_path)
+
+    conn = None
 
     try:
         conn = duckdb.connect(str(duck_path))

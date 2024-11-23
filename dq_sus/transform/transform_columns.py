@@ -1,42 +1,33 @@
 import json
 import logging
+from pathlib import Path
 from typing import Dict
+
 import duckdb
 import unidecode
+
 from dq_sus.utils.config import DB_PATH, JSON_PATH
-from pathlib import Path
 
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
 
 def load_json(
-    json_path: Path = JSON_PATH / "columns_translated_english.json"
+    json_path: Path = JSON_PATH / "columns_translated_english.json",
 ) -> Dict[str, str]:
     """
     Load a JSON file containing column mappings.
-
-    Args:
-        json_path (Path): Path to the JSON file containing column mappings.
-
-    Returns:
-        Dict[str, str]: A dictionary containing the column mappings.
-
-    Raises:
-        FileNotFoundError: If the JSON file is not found.
-        json.JSONDecodeError: If there is an error decoding the JSON file.
-        Exception: For any other unexpected errors.
     """
+    if not json_path.exists():
+        logging.error(f"JSON file not found at {json_path}")
+        raise FileNotFoundError(f"JSON file not found at {json_path}")
+
     try:
         with open(json_path, "r") as file:
             columns_mapping = json.load(file)
         logging.info(f"Column mapping loaded successfully from {json_path}.")
         return dict(columns_mapping)
-    except FileNotFoundError:
-        logging.error(f"JSON file not found at {json_path}")
-        raise
     except json.JSONDecodeError as e:
         logging.error(f"Error decoding JSON file: {e}")
         raise

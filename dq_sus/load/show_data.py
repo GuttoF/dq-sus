@@ -55,5 +55,5 @@ def load_duckdb_data(
 
 
 if __name__ == "__main__":
-    data = load_duckdb_data(table_name="sinan", limit=100)
+    data = load_duckdb_data(table_name="alarms_severities", limit=100)
     print(data.head())

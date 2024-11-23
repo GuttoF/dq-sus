@@ -1,12 +1,14 @@
 import logging
-from dq_sus.utils.config import DB_PATH
-import duckdb
 from pathlib import Path
 
+import duckdb
+
+from dq_sus.utils.config import DB_PATH
+
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+
 
 def transform_db(db_path: Path = DB_PATH) -> None:
     """
@@ -205,7 +207,6 @@ def transform_db(db_path: Path = DB_PATH) -> None:
     try:
         conn = duckdb.connect(str(db_path))
         for query in create_tables_queries:
-            logging.info(f"Executing query:\n{query}")
             conn.execute(query)
 
         conn.execute("DROP TABLE IF EXISTS sinan")
@@ -217,3 +218,7 @@ def transform_db(db_path: Path = DB_PATH) -> None:
         if conn:
             conn.close()
         raise
+
+
+if __name__ == "__main__":
+    transform_db()
