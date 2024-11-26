@@ -12,5 +12,6 @@
 - [ ] A name for this package
 - [ ] A logo
 - [ ] Doc everything
-- [ ] Create an ETL class
+- [x] Create an ETL class
 - [x] Create diagram using mermaid
+- [ ] Create an option to limit Null values
