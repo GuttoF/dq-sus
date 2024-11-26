@@ -1,6 +1,6 @@
 from dq_sus.extract import Extractor
-from dq_sus.transform import ColumnTransformer, DBTransformer
 from dq_sus.load import Loader
+from dq_sus.transform import ColumnTransformer, DBTransformer
 
 
 def main() -> None:

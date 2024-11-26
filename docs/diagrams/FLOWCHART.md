@@ -1,6 +1,8 @@
-# Mermaid Flowchard
+# Flowchart
 
 ```mermaid
+%%{init: {"themeVariables": {"fontFamily": "Times New Roman, Times, serif"}}}%%
+%%{init: {'theme':'neutral'}}%%
 graph TD
     A[Start] --> B[Extraction: extract_parquet]
     B --> C{Valid Disease?}
