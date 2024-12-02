@@ -16,6 +16,16 @@ logging.basicConfig(
 
 
 class Extractor:
+    """
+    A class used to extract data for specific diseases and insert it into a DuckDB database.
+
+    Attributes:
+
+    Methods:
+        extract_parquet(disease: str, years: Union[int, list[int]]) -> list[Path]:
+
+        insert_parquet_to_duck(files: list[Path]) -> None:
+    """
     def __init__(self, db_path: Path = DB_PATH, parquet_path: Path = PARQUET_PATH):
         """
         Initialize the Extractor with paths for the DuckDB database and Parquet files.

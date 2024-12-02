@@ -11,6 +11,18 @@ logging.basicConfig(
 
 
 class DBTransformer:
+    """
+    A class used to transform a database by creating new tables with normalized structures
+
+    Attributes
+    ----------
+    db_path : Path
+        The path to the database file.
+
+    Methods
+    -------
+    transform_db()
+    """
     def __init__(self, db_path: Path = DB_PATH):
         self.db_path = db_path
 
