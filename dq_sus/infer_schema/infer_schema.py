@@ -3,7 +3,7 @@ from pathlib import Path
 import warnings
 import pandas as pd
 import pandera as pa
-from pysus.ftp.databases.sinan import SINAN
+from pysus.ftp.databases.sinan import SINAN # type: ignore
 from dq_sus.utils.config import RAW_DATA_PATH, SCHEMA_PATH
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="stringcase")
