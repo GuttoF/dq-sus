@@ -17,7 +17,8 @@ logging.basicConfig(
 
 class Extractor:
     """
-    A class used to extract data for specific diseases and insert it into a DuckDB database.
+    A class used to extract data for specific diseases and insert it into a DuckDB
+    database.
 
     Attributes:
 

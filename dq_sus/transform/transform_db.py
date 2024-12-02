@@ -12,7 +12,8 @@ logging.basicConfig(
 
 class DBTransformer:
     """
-    A class used to transform a database by creating new tables with normalized structures
+    A class used to transform a database by creating new tables with normalized
+    structures
 
     Attributes
     ----------

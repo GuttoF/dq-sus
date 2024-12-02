@@ -22,7 +22,8 @@ class Loader:
         __init__(db_path: Path = DB_PATH):
         _validate_db_path() -> None:
             Validate if the DuckDB database file exists.
-        load_data(table_name: str = "sinan", limit: Optional[int] = None) -> pd.DataFrame:
+        load_data(table_name: str = "sinan", limit: Optional[int] = None)
+        -> pd.DataFrame:
     """
     def __init__(self, db_path: Path = DB_PATH):
         """
