@@ -1,5 +1,4 @@
-name: CI
-
+name: CI dq-sus
 on:
   push:
     branches:
@@ -33,5 +32,4 @@ jobs:
     - name: Run tests
 
       run: |
-        source .venv/bin/activate
-        pytest tests -v.
+        uv run pytest tests -v
