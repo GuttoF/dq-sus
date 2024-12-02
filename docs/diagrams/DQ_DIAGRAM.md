@@ -14,7 +14,7 @@ graph LR
     DuckDB --> Pandera{{Data Quality Validation}}
     Pandera --> OK{Valid?}
     OK --> Yes --> Load
-    OK --> No --> Error
+    OK --> No --> Error --> DuckDB
 
 
 ```

@@ -70,5 +70,5 @@ class Loader:
 
 if __name__ == "__main__":
     db_loader = Loader()
-    data = db_loader.load_data(table_name="alarms_severities", limit=100)
+    data = db_loader.load_data(table_name="alarms_severities", limit=None)
     print(data.head())

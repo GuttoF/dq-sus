@@ -6,7 +6,7 @@ from typing import Union
 
 import duckdb
 import pandas as pd
-from pysus.ftp.databases.sinan import SINAN
+from pysus.ftp.databases.sinan import SINAN # type: ignore
 
 from dq_sus.utils.config import DB_PATH, PARQUET_PATH
 

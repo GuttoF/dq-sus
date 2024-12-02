@@ -12,14 +12,14 @@ flowchart TD
     subgraph CLIFlow ["CLI Flow"]
         CLI[CLI] --> ExtractorCLI["Extract Data"]
         ExtractorCLI --> TransformerCLI["Transform Data"]
-        TransformerCLI --> LoaderCLI["Load into DuckDB"]
+        TransformerCLI --> LoaderCLI["Load into OLAP Database"]
         LoaderCLI --> ResultCLI["Integrate with a BI Tool"]
     end
 
     subgraph NotebookFlow ["Jupyter Flow"]
         Notebook["Jupyter"] --> ExtractorNB["Extract Data"]
         ExtractorNB --> TransformerNB["Transform Data"]
-        TransformerNB --> LoaderNB["Load into DataFrame"]
+        TransformerNB --> LoaderNB["Choose DataFrame Type"]
         LoaderNB --> DataFrame["Pandas/Polars DataFrame"]
     end
 

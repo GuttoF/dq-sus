@@ -207,7 +207,8 @@ class DBTransformer:
             for query in create_tables_queries:
                 conn.execute(query)
 
-            conn.execute("DROP TABLE IF EXISTS sinan")
+            #conn.execute("DROP TABLE IF EXISTS sinan")
+
             conn.close()
 
             logging.info("Database transformed successfully!")
