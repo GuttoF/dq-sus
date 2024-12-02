@@ -13,6 +13,17 @@ logging.basicConfig(
 
 
 class Loader:
+    """
+    Loader class for loading data from a DuckDB database.
+
+    Attributes:
+
+    Methods:
+        __init__(db_path: Path = DB_PATH):
+        _validate_db_path() -> None:
+            Validate if the DuckDB database file exists.
+        load_data(table_name: str = "sinan", limit: Optional[int] = None) -> pd.DataFrame:
+    """
     def __init__(self, db_path: Path = DB_PATH):
         """
         Initialize the Loader with a database path.

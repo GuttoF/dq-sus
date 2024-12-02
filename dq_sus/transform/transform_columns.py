@@ -14,10 +14,23 @@ logging.basicConfig(
 
 
 class ColumnTransformer:
+    """
+    A class to handle the transformation of column names in a DuckDB database table
+    based on a JSON mapping file. It includes functionality to load the JSON mapping,
+    remove accents from existing column names, and rename columns according to the
+    mapping.
+
+    Attributes:
+        db_path (Path): The path to the DuckDB database file.
+        json_path (Path): The path to the JSON file containing column mappings.
+
+    Methods:
+        load_json() -> Dict[str, str]: Load a JSON file containing column mappings.
+        rename_db_columns(table_name: str = "sinan") -> None:
+    """
     def __init__(self, db_path: Path = DB_PATH, json_path: Path = JSON_PATH):
         self.db_path = db_path
         self.json_path = json_path / "columns_translated_english.json"
-
     def load_json(self) -> Dict[str, str]:
         """
         Load a JSON file containing column mappings.
@@ -101,6 +114,6 @@ class ColumnTransformer:
 
         except Exception as e:
             logging.error(f"Error renaming columns in DuckDB: {e}")
-            if conn:
+            if conn: # type: ignore
                 conn.rollback()
             raise

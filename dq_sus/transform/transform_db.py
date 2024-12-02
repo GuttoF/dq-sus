@@ -11,6 +11,18 @@ logging.basicConfig(
 
 
 class DBTransformer:
+    """
+    A class used to transform a database by creating new tables with normalized structures
+
+    Attributes
+    ----------
+    db_path : Path
+        The path to the database file.
+
+    Methods
+    -------
+    transform_db()
+    """
     def __init__(self, db_path: Path = DB_PATH):
         self.db_path = db_path
 
@@ -202,18 +214,22 @@ class DBTransformer:
         """,
         ]
 
+        conn = None
         try:
             conn = duckdb.connect(str(self.db_path))
             for query in create_tables_queries:
                 conn.execute(query)
 
-            #conn.execute("DROP TABLE IF EXISTS sinan")
-
+            conn.execute("DROP TABLE IF EXISTS sinan")
             conn.close()
 
             logging.info("Database transformed successfully!")
+        except duckdb.CatalogException as ce:
+            logging.error(f"Catalog Error during transformation: {ce}")
+            raise ce
         except Exception as e:
             logging.error(f"Error during database transformation: {e}")
-            if conn:
+            if conn: # type: ignore
+                conn.rollback()
                 conn.close()
             raise
