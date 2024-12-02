@@ -29,5 +29,9 @@ jobs:
         pip install uv
         uv sync
 
+
     - name: Run tests
-      run: pytest tests -v.
+
+      run: |
+        source .venv/bin/activate
+        pytest tests -v.
