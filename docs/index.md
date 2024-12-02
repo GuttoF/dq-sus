@@ -1,18 +1,26 @@
 # Data Quality SUS
 
-## Data Quality Extraction Process
+## Fluxograma da ETL
+
+O sistema funciona em formato de ETL com processo de validação dos dados, igual ao esquema abaixo:
 
 ```mermaid
-graph TD
-    A[Configurar Variáveis] --> B[Ler o Arquivo Parque do Pysus];
-    B --> V[Validação do Schema de Entrada];
-    B --> |Falha| X[Alerta de Erro];
-    V --> |Falha| X[Alerta de Erro];
-    V --> |Sucesso| C[Transformar];
-    C --> Y[Validação do Schema de Saída];
-    Y --> |Falha| Z[Alerta de Erro];
-    Y --> |Sucesso| D[Salvar no DuckDB];
+%%{init: {"themeVariables": {"fontFamily": "Times New Roman, Times, serif"}}}%%
+%%{init: {'theme':'neutral'}}%%
+graph LR
+%%Subgraph1[API e CLI]
+%%CLI[Command Line Interface] --> Extractor
+
+
+    Extractor --> DuckDB[(OLAP)]
+    DuckDB --> Transformer[Transformer]
+    Transformer --> DuckDB[(OLAP)]
+    DuckDB --> Pandera{{Data Quality Validation}}
+    Pandera --> OK{Valid?}
+    OK --> Yes --> Load
+    OK --> No --> Error --> DuckDB
 ```
 
-# Contrato de dados
-::: src.etl.extraction
+## DataFrames
+
+:::dq_sus.get_info
