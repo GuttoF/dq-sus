@@ -1,3 +1,14 @@
-from .get_raw import extract_parquet, insert_parquet_to_duck
+"""
+This module provides a class for extracting SINAN data and handling it with DuckDB.
 
-__all__ = ["extract_parquet", "insert_parquet_to_duck"]
+Available classes:
+- Extractor: A class for extracting SINAN data and inserting it into a DuckDB database.
+"""
+
+from .get_raw import Extractor
+
+__all__ = ["Extractor"]
+
+__version__ = "0.5.0"
+__author__ = "Gutto França"
+__email__ = "guttolaudie@gmail.com"

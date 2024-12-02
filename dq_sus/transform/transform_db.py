@@ -10,19 +10,17 @@ logging.basicConfig(
 )
 
 
-def transform_db(db_path: Path = DB_PATH) -> None:
-    """
-    Transforms the database by creating new tables with normalized structures
-    and dropping the original raw table.
+class DBTransformer:
+    def __init__(self, db_path: Path = DB_PATH):
+        self.db_path = db_path
 
-    Args:
-        db_path (str): Path to the DuckDB database file. Defaults to DB_PATH.
-
-    Returns:
-        None
-    """
-    create_tables_queries = [
+    def transform_db(self) -> None:
         """
+        Transforms the database by creating new tables with normalized structures
+        and dropping the original raw table.
+        """
+        create_tables_queries = [
+            """
         CREATE TABLE sinan_id AS
         SELECT row_number() OVER () AS notification_id, *
         FROM sinan;
@@ -31,7 +29,7 @@ def transform_db(db_path: Path = DB_PATH) -> None:
 
         ALTER TABLE sinan_id RENAME TO sinan;
         """,
-        """
+            """
         CREATE TABLE notifications_info AS
         SELECT
             notification_id,
@@ -46,7 +44,7 @@ def transform_db(db_path: Path = DB_PATH) -> None:
             notification_health_unit_id
         FROM sinan;
         """,
-        """
+            """
         CREATE TABLE personal_data AS
         SELECT
             notification_id,
@@ -66,7 +64,7 @@ def transform_db(db_path: Path = DB_PATH) -> None:
             occupation_or_activity_field
         FROM sinan;
         """,
-        """
+            """
         CREATE TABLE clinical_signs AS
         SELECT
             notification_id,
@@ -85,7 +83,7 @@ def transform_db(db_path: Path = DB_PATH) -> None:
             retro_orbital_pain
         FROM sinan;
         """,
-        """
+            """
         CREATE TABLE patient_diseases AS
         SELECT
             notification_id,
@@ -98,7 +96,7 @@ def transform_db(db_path: Path = DB_PATH) -> None:
             autoimmune_diseases
         FROM sinan;
         """,
-        """
+            """
         CREATE TABLE exams AS
         SELECT
             notification_id,
@@ -127,7 +125,7 @@ def transform_db(db_path: Path = DB_PATH) -> None:
             fdh_scd_degree
         FROM sinan;
         """,
-        """
+            """
         CREATE TABLE hospital_info AS
         SELECT
             notification_id,
@@ -148,7 +146,7 @@ def transform_db(db_path: Path = DB_PATH) -> None:
             case_closure_date
         FROM sinan;
         """,
-        """
+            """
         CREATE TABLE alarms_severities AS
         SELECT
             notification_id,
@@ -189,7 +187,7 @@ def transform_db(db_path: Path = DB_PATH) -> None:
             complications
         FROM sinan;
         """,
-        """
+            """
         CREATE TABLE sinan_internal_info AS
         SELECT
             notification_id,
@@ -202,23 +200,20 @@ def transform_db(db_path: Path = DB_PATH) -> None:
             windows_migration
         FROM sinan;
         """,
-    ]
+        ]
 
-    try:
-        conn = duckdb.connect(str(db_path))
-        for query in create_tables_queries:
-            conn.execute(query)
+        try:
+            conn = duckdb.connect(str(self.db_path))
+            for query in create_tables_queries:
+                conn.execute(query)
 
-        conn.execute("DROP TABLE IF EXISTS sinan")
-        conn.close()
+            #conn.execute("DROP TABLE IF EXISTS sinan")
 
-        logging.info("Database transformed successfully!")
-    except Exception as e:
-        logging.error(f"Error during database transformation: {e}")
-        if conn:
             conn.close()
-        raise
 
-
-if __name__ == "__main__":
-    transform_db()
+            logging.info("Database transformed successfully!")
+        except Exception as e:
+            logging.error(f"Error during database transformation: {e}")
+            if conn:
+                conn.close()
+            raise

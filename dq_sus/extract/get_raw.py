@@ -1,11 +1,12 @@
 import logging
 import os
+import shutil
 from pathlib import Path
 from typing import Union
 
 import duckdb
 import pandas as pd
-from pysus.ftp.databases.sinan import SINAN
+from pysus.ftp.databases.sinan import SINAN # type: ignore
 
 from dq_sus.utils.config import DB_PATH, PARQUET_PATH
 
@@ -14,115 +15,126 @@ logging.basicConfig(
 )
 
 
-def extract_parquet(
-    disease: str, years: Union[int, list[int]], file_path: Path = PARQUET_PATH
-) -> list[Path]:
-    """
-    Extracts parquet files for a given disease and years.
+class Extractor:
+    def __init__(self, db_path: Path = DB_PATH, parquet_path: Path = PARQUET_PATH):
+        """
+        Initialize the Extractor with paths for the DuckDB database and Parquet files.
 
-    Parameters:
-    disease (str): The disease to extract data for. Must be one of
-        ["ZIKA", "CHIK", "DENG"].
-    years (Union[int, list[int]]): The year or list of years to extract data for.
-    file_path (Path, optional): The directory path where parquet files are stored.
-        Defaults to PARQUET_PATH.
+        Parameters:
+            db_path (Path): Path to the DuckDB database file.
+            parquet_path (Path): Path to the directory for storing Parquet files.
+        """
+        self.db_path = db_path
+        self.parquet_path = parquet_path
 
-    Returns:
-    list[Path]: A list of Paths to the extracted parquet files.
+    def extract_parquet(self, disease: str, years: Union[int, list[int]]) -> list[Path]:
+        """
+        Extracts parquet files for a given disease and years.
 
-    Raises:
-    ValueError: If an invalid disease is provided.
-    """
-    valid_diseases = ["ZIKA", "CHIK", "DENG"]
-    if disease not in valid_diseases:
-        logging.error(
-            f"Invalid disease '{disease}' provided. Only {valid_diseases} "
-            "are supported."
-        )
-        raise ValueError(
-            f"Invalid disease '{disease}'. Please use one of the following: "
-            f"{valid_diseases}"
-        )
+        Parameters:
+            disease (str): The disease to extract data for. Must be one of
+                ["ZIKA", "CHIK", "DENG"].
+            years (Union[int, list[int]]): The year or list of years to
+                extract data for.
 
-    if isinstance(years, int):
-        years = [years]
+        Returns:
+            list[Path]: A list of Paths to the extracted parquet files.
 
-    file_paths = []
-    for year in years:
-        year_suffix = str(year)[2:]
-        file_name = file_path / f"{disease}BR{year_suffix}.parquet"
+        Raises:
+            ValueError: If an invalid disease is provided.
+        """
+        valid_diseases = ["ZIKA", "CHIK", "DENG"]
+        if disease not in valid_diseases:
+            logging.error(
+                f"Invalid disease '{disease}' provided. Only {valid_diseases} "
+                "are supported."
+            )
+            raise ValueError(
+                f"Invalid disease '{disease}'. Please use one of the following: "
+                f"{valid_diseases}"
+            )
 
-        if not file_name.exists():
-            sinan = SINAN().load()
-            file = sinan.get_files(disease, year)
-            sinan.download(file, local_dir=str(file_path))
-            logging.info(f"File saved in {file_name}")
+        if isinstance(years, int):
+            years = [years]
 
-        file_paths.append(file_name)
+        file_paths = []
+        for year in years:
+            year_suffix = str(year)[2:]
+            file_name = self.parquet_path / f"{disease}BR{year_suffix}.parquet"
 
-    return file_paths
+            if not file_name.exists():
+                sinan = SINAN().load()
+                file = sinan.get_files(disease, year)
+                sinan.download(file, local_dir=str(self.parquet_path))
+                logging.info(f"File saved in {file_name}")
 
+            file_paths.append(file_name)
 
-def insert_parquet_to_duck(files: list[Path], file_path: Path = DB_PATH) -> None:
-    """
-    Inserts data from a list of Parquet files into a DuckDB database.
+        pysus_dir = Path.home() / "pysus"
+        if pysus_dir.exists() and pysus_dir.is_dir():
+            try:
+                shutil.rmtree(pysus_dir)
+                logging.info(f"Removed directory {pysus_dir}")
+            except Exception as e:
+                logging.error(f"Error removing directory {pysus_dir}: {e}")
 
-    This function creates a new DuckDB database at the specified file path,
-    overwriting any existing database file. It then reads each Parquet file
-    in the provided list, and inserts the data into a table named 'sinan'
-    within the database. If the table already exists, the data is appended
-    to the table.
+        return file_paths
 
-    Args:
-        files (list[Path]): A list of Path objects pointing to the Parquet files
-            to be inserted.
-        file_path (Path, optional): The directory path where the DuckDB
-            database file will be created. Defaults to DB_PATH.
+    def insert_parquet_to_duck(self, files: list[Path]) -> None:
+        """
+        Inserts data from a list of Parquet files into a DuckDB database.
 
-    Returns:
-        None
+        Parameters:
+            files (list[Path]): A list of Path objects pointing to the Parquet files
+                to be inserted.
 
-    Raises:
-        Exception: If an error occurs during the database operations,
-        it logs the error and closes the connection.
-    """
-    duck_path = file_path
-    if not duck_path.parent.exists():
-        logging.info(f"Directory {duck_path.parent} does not exist. Creating it.")
-        duck_path.parent.mkdir(parents=True, exist_ok=True)
+        Returns:
+            None
 
-    if duck_path.exists():
-        logging.info(f"Database already exists at {duck_path}, it will be overwritten.")
-        os.remove(duck_path)
+        Raises:
+            Exception: If an error occurs during the database operations,
+            it logs the error and closes the connection.
+        """
+        duck_path = self.db_path
+        if not duck_path.parent.exists():
+            logging.info(f"Directory {duck_path.parent} does not exist. Creating it.")
+            duck_path.parent.mkdir(parents=True, exist_ok=True)
 
-    conn = None
+        if duck_path.exists():
+            logging.info(
+                f"Database already exists at {duck_path}, it will be overwritten."
+            )
+            os.remove(duck_path)
 
-    try:
-        conn = duckdb.connect(str(duck_path))
+        conn = None
 
-        for i, file in enumerate(files):
-            logging.info(f"Inserting data from {file} into the database.")
-            data = pd.read_parquet(file)
+        try:
+            conn = duckdb.connect(str(duck_path))
 
-            conn.register("temp_table", data)
+            for i, file in enumerate(files):
+                logging.info(f"Inserting data from {file} into the database.")
+                data = pd.read_parquet(file)
 
-            if i == 0:
-                conn.execute("CREATE TABLE sinan AS SELECT * FROM temp_table")
-            else:
-                conn.execute("INSERT INTO sinan SELECT * FROM temp_table")
+                conn.register("temp_table", data)
 
-            conn.unregister("temp_table")
-            del data
+                if i == 0:
+                    conn.execute("CREATE TABLE sinan AS SELECT * FROM temp_table")
+                else:
+                    conn.execute("INSERT INTO sinan SELECT * FROM temp_table")
 
-        conn.close()
-        logging.info("All data inserted into the database successfully.")
-    except Exception as e:
-        logging.error(f"Error: {e}")
-        if conn:
+                conn.unregister("temp_table")
+                del data
+
             conn.close()
+            logging.info("All data inserted into the database successfully.")
+        except Exception as e:
+            logging.error(f"Error: {e}")
+            if conn:
+                conn.close()
 
 
 if __name__ == "__main__":
+    extractor = Extractor()
     years = [2022, 2023]
-    files = extract_parquet("CHIK", years)
-    insert_parquet_to_duck(files)
+    files = extractor.extract_parquet("CHIK", years)
+    extractor.insert_parquet_to_duck(files)
