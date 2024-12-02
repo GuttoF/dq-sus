@@ -1,0 +1,13 @@
+{
+    "conventionalCommits.scopes": [
+        "extraction",
+        "load",
+        "transformation",
+        "module"
+    ],
+    "python.testing.pytestArgs": [
+        "dq_sus"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
