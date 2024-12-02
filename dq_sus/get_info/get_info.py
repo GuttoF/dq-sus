@@ -19,17 +19,21 @@ def get_data_from_table(
     verbose: bool = False,
 ) -> pd.DataFrame:
     """
-    Extracts data from a specified table, processes it, and returns it as a pandas DataFrame.
+    Extracts data from a specified table, processes it, and returns it as a pandas
+    DataFrame.
 
     Parameters:
     table_name (str): The name of the table to load data from.
-    years (list[int], optional): List of years to filter the data. Defaults to [2022, 2023].
+    years (list[int], optional): List of years to filter the data. Defaults to [2022,
+    2023].
     disease (str, optional): Disease code to filter the data. Defaults to "CHIK".
-    limit (int | None, optional): Maximum number of rows to load. If None, loads all rows. Defaults to None.
+    limit (int | None, optional): Maximum number of rows to load. If None, loads all
+    rows. Defaults to None.
     verbose (bool, optional): If True, enables verbose logging. Defaults to False.
 
     Returns:
-    pd.DataFrame: The processed data as a pandas DataFrame. Returns an empty DataFrame if no data is available.
+    pd.DataFrame: The processed data as a pandas DataFrame. Returns an empty DataFrame
+    if no data is available.
     """
     if not verbose:
         logging.disable(logging.CRITICAL)
@@ -73,9 +77,12 @@ def get_notifications(
     Retrieve notification data for a specified disease and years.
 
     Args:
-        years (list[int], optional): List of years to retrieve data for. Defaults to [2022, 2023].
-        disease (str, optional): Disease code to filter notifications. Defaults to "CHIK".
-        limit (int | None, optional): Maximum number of records to retrieve. Defaults to None.
+        years (list[int], optional): List of years to retrieve data for. Defaults to
+        [2022, 2023].
+        disease (str, optional): Disease code to filter notifications.
+        Defaults to "CHIK".
+        limit (int | None, optional): Maximum number of records to retrieve. Defaults
+        to None.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
@@ -90,9 +97,12 @@ def get_personal_data(
     Retrieve patients personal data for a specified disease and years.
 
     Args:
-        years (list[int], optional): List of years to retrieve data for. Defaults to [2022, 2023].
-        disease (str, optional): Disease code to filter notifications. Defaults to "CHIK".
-        limit (int | None, optional): Maximum number of records to retrieve. Defaults to None.
+        years (list[int], optional): List of years to retrieve data for. Defaults to
+        [2022, 2023].
+        disease (str, optional): Disease code to filter notifications.
+        Defaults to "CHIK".
+        limit (int | None, optional): Maximum number of records to retrieve.
+        Defaults to None.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
@@ -107,9 +117,12 @@ def get_clinical_signs(
     Retrieve clinical signs data data for a specified disease and years.
 
     Args:
-        years (list[int], optional): List of years to retrieve data for. Defaults to [2022, 2023].
-        disease (str, optional): Disease code to filter notifications. Defaults to "CHIK".
-        limit (int | None, optional): Maximum number of records to retrieve. Defaults to None.
+        years (list[int], optional): List of years to retrieve data for.
+        Defaults to [2022, 2023].
+        disease (str, optional): Disease code to filter notifications.
+        Defaults to "CHIK".
+        limit (int | None, optional): Maximum number of records to retrieve.
+        Defaults to None.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
@@ -124,9 +137,12 @@ def get_patient_diseases(
     Retrieve patient diseases for a specified disease and years.
 
     Args:
-        years (list[int], optional): List of years to retrieve data for. Defaults to [2022, 2023].
-        disease (str, optional): Disease code to filter notifications. Defaults to "CHIK".
-        limit (int | None, optional): Maximum number of records to retrieve. Defaults to None.
+        years (list[int], optional): List of years to retrieve data for. Defaults to
+        [2022, 2023].
+        disease (str, optional): Disease code to filter notifications.
+        Defaults to "CHIK".
+        limit (int | None, optional): Maximum number of records to retrieve.
+        Defaults to None.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
@@ -141,9 +157,12 @@ def get_exams(
     Retrieve exams info for a specified disease and years.
 
     Args:
-        years (list[int], optional): List of years to retrieve data for. Defaults to [2022, 2023].
-        disease (str, optional): Disease code to filter notifications. Defaults to "CHIK".
-        limit (int | None, optional): Maximum number of records to retrieve. Defaults to None.
+        years (list[int], optional): List of years to retrieve data for.
+        Defaults to [2022, 2023].
+        disease (str, optional): Disease code to filter notifications.
+        Defaults to "CHIK".
+        limit (int | None, optional): Maximum number of records to retrieve.
+        Defaults to None.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
@@ -158,9 +177,12 @@ def get_hospital_info(
     Retrieve hospital info for a specified disease and years.
 
     Args:
-        years (list[int], optional): List of years to retrieve data for. Defaults to [2022, 2023].
-        disease (str, optional): Disease code to filter notifications. Defaults to "CHIK".
-        limit (int | None, optional): Maximum number of records to retrieve. Defaults to None.
+        years (list[int], optional): List of years to retrieve data for.
+        Defaults to [2022, 2023].
+        disease (str, optional): Disease code to filter notifications.
+        Defaults to "CHIK".
+        limit (int | None, optional): Maximum number of records to retrieve.
+        Defaults to None.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
@@ -175,9 +197,12 @@ def get_alarm_severities(
     Retrieve alarm severities in treatment for a specified disease and years.
 
     Args:
-        years (list[int], optional): List of years to retrieve data for. Defaults to [2022, 2023].
-        disease (str, optional): Disease code to filter notifications. Defaults to "CHIK".
-        limit (int | None, optional): Maximum number of records to retrieve. Defaults to None.
+        years (list[int], optional): List of years to retrieve data for.
+        Defaults to [2022, 2023].
+        disease (str, optional): Disease code to filter notifications.
+        Defaults to "CHIK".
+        limit (int | None, optional): Maximum number of records to retrieve.
+        Defaults to None.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
@@ -192,9 +217,12 @@ def get_sinan_info(
     Retrieve sinal internal info for a specified disease and years.
 
     Args:
-        years (list[int], optional): List of years to retrieve data for. Defaults to [2022, 2023].
-        disease (str, optional): Disease code to filter notifications. Defaults to "CHIK".
-        limit (int | None, optional): Maximum number of records to retrieve. Defaults to None.
+        years (list[int], optional): List of years to retrieve data for.
+        Defaults to [2022, 2023].
+        disease (str, optional): Disease code to filter notifications.
+        Defaults to "CHIK".
+        limit (int | None, optional): Maximum number of records to retrieve.
+        Defaults to None.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
