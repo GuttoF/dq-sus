@@ -3,7 +3,8 @@
         "extraction",
         "load",
         "transformation",
-        "module"
+        "module",
+        "database"
     ],
     "python.testing.pytestArgs": [
         "dq_sus"
