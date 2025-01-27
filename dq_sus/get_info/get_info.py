@@ -71,7 +71,10 @@ def get_data_from_table(
 
 
 def get_notifications(
-    years: list[int] = [2022, 2023], disease: str = "CHIK", limit: int | None = None
+    years: list[int] = [2022, 2023],
+    disease: str = "CHIK",
+    limit: int | None = None,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """
     Retrieve notification data for a specified disease and years.
@@ -83,15 +86,19 @@ def get_notifications(
         Defaults to "CHIK".
         limit (int | None, optional): Maximum number of records to retrieve. Defaults
         to None.
+        verbose (bool, optional): If True, enables verbose logging. Defaults to False.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
     """
-    return get_data_from_table("notifications_info", years, disease, limit)
+    return get_data_from_table("notifications_info", years, disease, limit, verbose)
 
 
 def get_personal_data(
-    years: list[int] = [2022, 2023], disease: str = "CHIK", limit: int | None = None
+    years: list[int] = [2022, 2023],
+    disease: str = "CHIK",
+    limit: int | None = None,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """
     Retrieve patients personal data for a specified disease and years.
@@ -103,15 +110,19 @@ def get_personal_data(
         Defaults to "CHIK".
         limit (int | None, optional): Maximum number of records to retrieve.
         Defaults to None.
+        verbose (bool, optional): If True, enables verbose logging. Defaults to False.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
     """
-    return get_data_from_table("personal_data", years, disease, limit)
+    return get_data_from_table("personal_data", years, disease, limit, verbose)
 
 
 def get_clinical_signs(
-    years: list[int] = [2022, 2023], disease: str = "CHIK", limit: int | None = None
+    years: list[int] = [2022, 2023],
+    disease: str = "CHIK",
+    limit: int | None = None,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """
     Retrieve clinical signs data data for a specified disease and years.
@@ -123,15 +134,19 @@ def get_clinical_signs(
         Defaults to "CHIK".
         limit (int | None, optional): Maximum number of records to retrieve.
         Defaults to None.
+        verbose (bool, optional): If True, enables verbose logging. Defaults to False.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
     """
-    return get_data_from_table("clinical_signs", years, disease, limit)
+    return get_data_from_table("clinical_signs", years, disease, limit, verbose)
 
 
 def get_patient_diseases(
-    years: list[int] = [2022, 2023], disease: str = "CHIK", limit: int | None = None
+    years: list[int] = [2022, 2023],
+    disease: str = "CHIK",
+    limit: int | None = None,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """
     Retrieve patient diseases for a specified disease and years.
@@ -143,15 +158,19 @@ def get_patient_diseases(
         Defaults to "CHIK".
         limit (int | None, optional): Maximum number of records to retrieve.
         Defaults to None.
+        verbose (bool, optional): If True, enables verbose logging. Defaults to False.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
     """
-    return get_data_from_table("patient_diseases", years, disease, limit)
+    return get_data_from_table("patient_diseases", years, disease, limit, verbose)
 
 
 def get_exams(
-    years: list[int] = [2022, 2023], disease: str = "CHIK", limit: int | None = None
+    years: list[int] = [2022, 2023],
+    disease: str = "CHIK",
+    limit: int | None = None,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """
     Retrieve exams info for a specified disease and years.
@@ -163,15 +182,19 @@ def get_exams(
         Defaults to "CHIK".
         limit (int | None, optional): Maximum number of records to retrieve.
         Defaults to None.
+        verbose (bool, optional): If True, enables verbose logging. Defaults to False.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
     """
-    return get_data_from_table("exams", years, disease, limit)
+    return get_data_from_table("exams", years, disease, limit, verbose)
 
 
 def get_hospital_info(
-    years: list[int] = [2022, 2023], disease: str = "CHIK", limit: int | None = None
+    years: list[int] = [2022, 2023],
+    disease: str = "CHIK",
+    limit: int | None = None,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """
     Retrieve hospital info for a specified disease and years.
@@ -183,15 +206,19 @@ def get_hospital_info(
         Defaults to "CHIK".
         limit (int | None, optional): Maximum number of records to retrieve.
         Defaults to None.
+        verbose (bool, optional): If True, enables verbose logging. Defaults to False.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
     """
-    return get_data_from_table("hospital_info", years, disease, limit)
+    return get_data_from_table("hospital_info", years, disease, limit, verbose)
 
 
 def get_alarm_severities(
-    years: list[int] = [2022, 2023], disease: str = "CHIK", limit: int | None = None
+    years: list[int] = [2022, 2023],
+    disease: str = "CHIK",
+    limit: int | None = None,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """
     Retrieve alarm severities in treatment for a specified disease and years.
@@ -203,15 +230,19 @@ def get_alarm_severities(
         Defaults to "CHIK".
         limit (int | None, optional): Maximum number of records to retrieve.
         Defaults to None.
+        verbose (bool, optional): If True, enables verbose logging. Defaults to False.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
     """
-    return get_data_from_table("alarms_severities", years, disease, limit)
+    return get_data_from_table("alarms_severities", years, disease, limit, verbose)
 
 
 def get_sinan_info(
-    years: list[int] = [2022, 2023], disease: str = "CHIK", limit: int | None = None
+    years: list[int] = [2022, 2023],
+    disease: str = "CHIK",
+    limit: int | None = None,
+    verbose: bool = False,
 ) -> pd.DataFrame:
     """
     Retrieve sinal internal info for a specified disease and years.
@@ -223,8 +254,9 @@ def get_sinan_info(
         Defaults to "CHIK".
         limit (int | None, optional): Maximum number of records to retrieve.
         Defaults to None.
+        verbose (bool, optional): If True, enables verbose logging. Defaults to False.
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
     """
-    return get_data_from_table("sinan_internal_info", years, disease, limit)
+    return get_data_from_table("sinan_internal_info", years, disease, limit, verbose)
