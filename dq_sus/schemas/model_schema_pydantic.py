@@ -128,7 +128,7 @@ class NotificationsSchema(pa.DataFrameModel):
     FLXRECEBI: Series[str] = pa.Field(coerce = False, nullable=True)
     MIGRADO_W: Series[str] = pa.Field()
 
-    class Config:
+    class Config: # type: ignore # noqa # pylint: disable=missing-class-docstring
         # Data Quality Dimensions
         # Consistency and Validity
         coerce = True

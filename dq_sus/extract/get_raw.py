@@ -37,6 +37,13 @@ class Extractor:
         """
         self.db_path = db_path
         self.parquet_path = parquet_path
+        
+        if not self.db_path.exists():
+            logging.info(f"Ensuring the database path exists: {self.db_path}")
+            self.db_path.parent.mkdir(parents=True, exist_ok=True)
+            self.db_path.touch(exist_ok=True)
+            logging.info(f"Database file created at {self.db_path}")
+            
 
     def extract_parquet(self, disease: str, years: Union[int, list[int]]) -> list[Path]:
         """
