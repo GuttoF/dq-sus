@@ -1,6 +1,8 @@
 import logging
+import re
 
 import pandas as pd
+from pysus import SINAN
 
 from dq_sus.extract import Extractor
 from dq_sus.load import Loader
@@ -9,6 +11,41 @@ from dq_sus.transform import ColumnTransformer, DBTransformer
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+
+
+def get_years(disease: str="CHIK") -> str:
+    """
+    Extract available years from disease-related files.
+
+    Args:
+        ```
+
+    Returns:
+        str: Error message if an invalid disease is provided.
+        str: Message listing the available years for the specified diseases.
+    """
+
+    sinan = SINAN().load()
+
+    valid_diseases = {"DENG": "dengue", "ZIKA": "zika", "CHIK": "chikungunya"}
+
+    if any(disease_code not in valid_diseases for disease_code in disease):
+        return "Error: Only DENG, ZIKA, and CHIK are allowed."
+
+    years = sorted(
+        int(match.group(1)) + 2000
+        for file in sinan.get_files(dis_code=[disease])
+        if (match := re.search(r"BR(\d{2})", file))
+    )
+
+    available_diseases = ', '.join(
+        valid_diseases[disease_code] for disease_code in disease
+    )
+    available_years = ', '.join(map(str, years))
+    return (
+        f"The available data for {available_diseases} is from the years: "
+        f"{available_years}."
+    )
 
 
 def get_data_from_table(
