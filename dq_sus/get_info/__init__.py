@@ -11,6 +11,8 @@ Available functions:
 - get_hospital_info
 - get_alarm_severities
 - get_sinan_info
+- get_data_from_table
+- get_years
 """
 
 from .get_info import (
@@ -22,6 +24,8 @@ from .get_info import (
     get_patient_diseases,
     get_personal_data,
     get_sinan_info,
+    get_data_from_table,
+    get_years
 )
 
 __all__ = [
@@ -33,8 +37,10 @@ __all__ = [
     "get_hospital_info",
     "get_alarm_severities",
     "get_sinan_info",
+    "get_data_from_table",
+    "get_years",
 ]
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 __author__ = "Gutto França"
 __email__ = "guttolaudie@gmail.com"

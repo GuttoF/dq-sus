@@ -25,6 +25,7 @@ class Loader:
         load_data(table_name: str = "sinan", limit: Optional[int] = None)
         -> pd.DataFrame:
     """
+
     def __init__(self, db_path: Path = DB_PATH):
         """
         Initialize the Loader with a database path.

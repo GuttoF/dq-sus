@@ -1,14 +1,55 @@
 import logging
+import re
 
 import pandas as pd
+from pysus.ftp.databases.sinan import SINAN  # type: ignore
 
 from dq_sus.extract import Extractor
-from dq_sus.load import Loader
+from dq_sus.load import Loader, Refresher
 from dq_sus.transform import ColumnTransformer, DBTransformer
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+
+
+def get_years(disease: str = "CHIK") -> None:
+    """
+    Extract available years from disease-related files.
+
+    Args:
+        disease (str): Disease code. Allowed values are "DENG", "ZIKA", and "CHIK".
+
+    Returns:
+        str: Error message if an invalid disease is provided.
+        str: Message listing the available years for the specified disease.
+    """
+
+    sinan = SINAN().load()
+
+    valid_diseases = {"DENG": "dengue", "ZIKA": "zika", "CHIK": "chikungunya"}
+
+    if disease not in valid_diseases:
+        return print("Error: Only DENG, ZIKA, and CHIK are allowed.")
+
+    years = sorted(
+        int(match.group(1)) + 2000
+        for file in sinan.get_files(dis_code=[disease])
+        if (match := re.search(r"BR(\d{2})", str(file)))
+    )
+
+    available_disease = valid_diseases[disease]
+    available_years = ", ".join(map(str, years))
+
+    available_disease = valid_diseases[disease]
+    if years:
+        available_years = (
+            f"from {years[0]} to {years[-1]}"
+            if len(years) > 1
+            else f"in {years[0]}"
+        )
+    else:
+        available_years = "no available data"
+
+    return print(f"The available data for {available_disease} is {available_years}.")
 
 
 def get_data_from_table(
@@ -43,12 +84,15 @@ def get_data_from_table(
         column_transformer = ColumnTransformer()
         db_transformer = DBTransformer()
         db_loader = Loader()
+        db_refresher = Refresher()
 
+        db_refresher.delete_database()
         files = extractor.extract_parquet(disease, years)
         extractor.insert_parquet_to_duck(files)
         column_transformer.rename_db_columns()
         db_transformer.transform_db()
         data = db_loader.load_data(table_name=table_name, limit=limit)
+        db_refresher.delete_database()
 
         data = data.dropna(axis=1, how="all")
 
