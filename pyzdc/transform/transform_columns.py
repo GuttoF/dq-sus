@@ -6,7 +6,7 @@ from typing import Dict
 import duckdb
 import unidecode
 
-from dq_sus.utils.config import DB_PATH, JSON_PATH
+from pyzdc.utils.config import DB_PATH, JSON_PATH
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

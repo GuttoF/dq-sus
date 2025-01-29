@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import duckdb
 import pytest
 
-from dq_sus.transform.transform_columns import ColumnTransformer
+from pyzdc.transform.transform_columns import ColumnTransformer
 
 
 @pytest.fixture

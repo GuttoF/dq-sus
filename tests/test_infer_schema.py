@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
 
-from dq_sus.infer_schema.infer_schema import (
+from pyzdc.infer_schema.infer_schema import (
     extract_to_infer_schema,
     infer_and_save_schema,
 )

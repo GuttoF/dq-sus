@@ -1,11 +1,16 @@
-site_name: new-sus
-repo_url: https://github.com/GuttoF/dq-sus
-repo_name: dq-sus/src
+site_name: PyZDC
+repo_url: https://github.com/GuttoF/pyzdc
+repo_name: pyzdc
 edit_uri: tree/main/docs
 
 theme:
   name : material
-  language: pt-BR
+  #language: pt-BR
+  #logo: assets/logo.png
+  #favicon: assets/logo.png
+
+markdown_extensions: 
+  - attr_list
 
 plugins:
   - search

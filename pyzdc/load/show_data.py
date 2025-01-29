@@ -5,7 +5,7 @@ from typing import Optional
 import duckdb
 import pandas as pd
 
-from dq_sus.utils.config import DB_PATH
+from pyzdc.utils.config import DB_PATH
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

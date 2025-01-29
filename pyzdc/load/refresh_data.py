@@ -3,7 +3,7 @@ import os
 import shutil
 from pathlib import Path
 
-from dq_sus.utils.config import DB_PATH, PARQUET_PATH
+from pyzdc.utils.config import DB_PATH, PARQUET_PATH
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

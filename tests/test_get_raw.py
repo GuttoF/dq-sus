@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
 
-from dq_sus.extract.get_raw import Extractor
+from pyzdc.extract.get_raw import Extractor
 
 
 @pytest.fixture

@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from dq_sus.get_info.get_info import (
+from pyzdc.get_info.get_info import (
     get_alarm_severities,
     get_clinical_signs,
     get_exams,

@@ -4,9 +4,9 @@ import re
 import pandas as pd
 from pysus.ftp.databases.sinan import SINAN  # type: ignore
 
-from dq_sus.extract import Extractor
-from dq_sus.load import Loader, Refresher
-from dq_sus.transform import ColumnTransformer, DBTransformer
+from pyzdc.extract import Extractor
+from pyzdc.load import Loader, Refresher
+from pyzdc.transform import ColumnTransformer, DBTransformer
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
