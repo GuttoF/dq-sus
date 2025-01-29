@@ -6,8 +6,9 @@ Available classes:
 """
 
 from .show_data import Loader
+from .refresh_data import Refresher
 
-__all__ = ["Loader"]
+__all__ = ["Loader", "Refresher"]
 
 __version__ = "0.5.0"
 __author__ = "Gutto França"
