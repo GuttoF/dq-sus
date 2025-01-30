@@ -13,4 +13,5 @@ build:
       - pip install uv
 
     post_install:
-      - uv sync --all-extras
+      - uv sync --extra doc
+      - source .venv/bin/activate
