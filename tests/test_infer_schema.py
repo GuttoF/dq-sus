@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
 
-from dq_sus.infer_schema.infer_schema import (
+from pyzdc.infer_schema.infer_schema import (
     extract_to_infer_schema,
     infer_and_save_schema,
 )
@@ -32,7 +32,7 @@ def test_extract_to_infer_schema_file_exists(
     file_path.parent.mkdir(parents=True, exist_ok=True)
     mock_data.to_parquet(file_path)
 
-    with patch("dq_sus.infer_schema.infer_schema.pd.read_parquet") as mock_read_parquet:
+    with patch("pyzdc.infer_schema.infer_schema.pd.read_parquet") as mock_read_parquet:
         mock_read_parquet.return_value = mock_data
         data = extract_to_infer_schema("CHIK", 2023, mock_raw_data_path)
         mock_read_parquet.assert_called_once_with(file_path)
@@ -43,8 +43,8 @@ def test_extract_to_infer_schema_download(
     mock_raw_data_path: Path, mock_data: pd.DataFrame
 ) -> None:
     with (
-        patch("dq_sus.infer_schema.infer_schema.SINAN") as mock_sinan,
-        patch("dq_sus.infer_schema.infer_schema.pd.read_parquet") as mock_read_parquet,
+        patch("pyzdc.infer_schema.infer_schema.SINAN") as mock_sinan,
+        patch("pyzdc.infer_schema.infer_schema.pd.read_parquet") as mock_read_parquet,
     ):
         mock_sinan_instance = MagicMock()
         mock_sinan.return_value = mock_sinan_instance
@@ -65,7 +65,7 @@ def test_infer_and_save_schema(mock_schema_path: Path, mock_data: pd.DataFrame) 
     schema_file = mock_schema_path / f"{schema_name}.py"
     mock_schema_path.mkdir(parents=True, exist_ok=True)
 
-    with patch("dq_sus.infer_schema.infer_schema.pa.infer_schema") as mock_infer_schema:
+    with patch("pyzdc.infer_schema.infer_schema.pa.infer_schema") as mock_infer_schema:
         mock_schema = MagicMock()
         mock_infer_schema.return_value = mock_schema
         mock_schema.to_script.return_value = "mock_schema_script"
@@ -86,7 +86,7 @@ def test_extract_to_infer_schema_parquet_read_error(mock_raw_data_path: Path) ->
     file_path.parent.mkdir(parents=True, exist_ok=True)
     file_path.touch()
 
-    with patch("dq_sus.infer_schema.infer_schema.pd.read_parquet") as mock_read_parquet:
+    with patch("pyzdc.infer_schema.infer_schema.pd.read_parquet") as mock_read_parquet:
         mock_read_parquet.side_effect = Exception("Read error")
         with pytest.raises(Exception, match="Read error"):
             extract_to_infer_schema("CHIK", 2023, mock_raw_data_path)
@@ -106,7 +106,7 @@ def test_infer_and_save_schema_write_error(
     mock_schema_path.mkdir(parents=True, exist_ok=True)
 
     with (
-        patch("dq_sus.infer_schema.infer_schema.pa.infer_schema") as mock_infer_schema,
+        patch("pyzdc.infer_schema.infer_schema.pa.infer_schema") as mock_infer_schema,
         patch("builtins.open", side_effect=Exception("Write error")),
     ):  # noqa: E501
         mock_schema = MagicMock()
@@ -118,7 +118,7 @@ def test_infer_and_save_schema_write_error(
 
 
 def test_extract_to_infer_schema_invalid_year(mock_raw_data_path: Path) -> None:
-    with patch("dq_sus.infer_schema.infer_schema.SINAN") as mock_sinan:
+    with patch("pyzdc.infer_schema.infer_schema.SINAN") as mock_sinan:
         mock_sinan_instance = MagicMock()
         mock_sinan.return_value = mock_sinan_instance
         mock_sinan_instance.load.return_value = mock_sinan_instance
@@ -134,7 +134,7 @@ def test_infer_and_save_schema_conversion_error(
     schema_name = "conversion_error"
     mock_schema_path.mkdir(parents=True, exist_ok=True)
 
-    with patch("dq_sus.infer_schema.infer_schema.pa.infer_schema") as mock_infer_schema:
+    with patch("pyzdc.infer_schema.infer_schema.pa.infer_schema") as mock_infer_schema:
         mock_schema = MagicMock()
         mock_infer_schema.return_value = mock_schema
         mock_schema.to_script.side_effect = Exception("Conversion error")
@@ -150,7 +150,7 @@ def test_infer_and_save_schema_output(
     schema_file = mock_schema_path / f"{schema_name}.py"
     mock_schema_path.mkdir(parents=True, exist_ok=True)
 
-    with patch("dq_sus.infer_schema.infer_schema.pa.infer_schema") as mock_infer_schema:
+    with patch("pyzdc.infer_schema.infer_schema.pa.infer_schema") as mock_infer_schema:
         mock_schema = MagicMock()
         mock_infer_schema.return_value = mock_schema
         mock_schema.to_script.return_value = "mock_schema_script"
@@ -163,7 +163,7 @@ def test_infer_and_save_schema_output(
 
 
 def test_extract_to_infer_schema_download_error(mock_raw_data_path: Path) -> None:
-    with patch("dq_sus.infer_schema.infer_schema.SINAN") as mock_sinan:
+    with patch("pyzdc.infer_schema.infer_schema.SINAN") as mock_sinan:
         mock_sinan_instance = MagicMock()
         mock_sinan.return_value = mock_sinan_instance
         mock_sinan_instance.load.return_value = mock_sinan_instance

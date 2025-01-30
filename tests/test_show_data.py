@@ -1,21 +1,22 @@
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import duckdb
 import pandas as pd
 import pytest
-from unittest.mock import MagicMock, patch
 
-from dq_sus.load.show_data import Loader
+from pyzdc.load.show_data import Loader
 
 
 @pytest.fixture
-def loader() -> Loader: # type: ignore
+def loader() -> Loader:  # type: ignore
     temp_path = Path(tempfile.mktemp(suffix=".duckdb"))
     conn = duckdb.connect(str(temp_path))
     df = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})  # noqa: F841
     conn.execute("CREATE TABLE sinan AS SELECT * FROM df")
     conn.close()
-    yield Loader(db_path=temp_path) # type: ignore
+    yield Loader(db_path=temp_path)  # type: ignore
     temp_path.unlink()
 
 
@@ -46,7 +47,7 @@ def test_load_data_no_limit(loader: Loader) -> None:
     assert "col2" in result.columns
 
 
-@patch("dq_sus.load.show_data.duckdb.connect")
+@patch("pyzdc.load.show_data.duckdb.connect")
 def test_load_data_exception(mock_connect: MagicMock, loader: Loader) -> None:
     mock_connect.side_effect = Exception("Connection error")
 

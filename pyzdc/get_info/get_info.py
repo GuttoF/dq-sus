@@ -1,14 +1,56 @@
 import logging
+import re
 
 import pandas as pd
+from pysus.ftp.databases.sinan import SINAN  # type: ignore
 
-from dq_sus.extract import Extractor
-from dq_sus.load import Loader
-from dq_sus.transform import ColumnTransformer, DBTransformer
+from pyzdc.extract import Extractor
+from pyzdc.load import Loader, Refresher
+from pyzdc.transform import ColumnTransformer, DBTransformer
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+
+
+def get_years(disease: str = "CHIK") -> None:
+    """
+    Extract available years from disease-related files.
+
+    Args:
+        disease (str): Disease code. Allowed values are "DENG", "ZIKA", and "CHIK".
+
+    Returns:
+        str: Error message if an invalid disease is provided.
+        str: Message listing the available years for the specified disease.
+
+    Example:
+        get_years("DENG")
+    """
+
+    sinan = SINAN().load()
+
+    valid_diseases = {"DENG": "dengue", "ZIKA": "zika", "CHIK": "chikungunya"}
+
+    if disease not in valid_diseases:
+        return print("Error: Only DENG, ZIKA, and CHIK are allowed.")
+
+    years = sorted(
+        int(match.group(1)) + 2000
+        for file in sinan.get_files(dis_code=[disease])
+        if (match := re.search(r"BR(\d{2})", str(file)))
+    )
+
+    available_disease = valid_diseases[disease]
+    available_years = ", ".join(map(str, years))
+
+    available_disease = valid_diseases[disease]
+    if years:
+        available_years = (
+            f"from {years[0]} to {years[-1]}" if len(years) > 1 else f"in {years[0]}"
+        )
+    else:
+        available_years = "no available data"
+
+    return print(f"The available data for {available_disease} is {available_years}.")
 
 
 def get_data_from_table(
@@ -34,6 +76,11 @@ def get_data_from_table(
     Returns:
     pd.DataFrame: The processed data as a pandas DataFrame. Returns an empty DataFrame
     if no data is available.
+
+    Example:
+        df = get_data_from_table(
+            "notifications_info", [2021, 2022], "DENG", limit=100, verbose=True
+        )
     """
     if not verbose:
         logging.disable(logging.CRITICAL)
@@ -43,12 +90,15 @@ def get_data_from_table(
         column_transformer = ColumnTransformer()
         db_transformer = DBTransformer()
         db_loader = Loader()
+        db_refresher = Refresher()
 
+        db_refresher.delete_database()
         files = extractor.extract_parquet(disease, years)
         extractor.insert_parquet_to_duck(files)
         column_transformer.rename_db_columns()
         db_transformer.transform_db()
         data = db_loader.load_data(table_name=table_name, limit=limit)
+        db_refresher.delete_database()
 
         data = data.dropna(axis=1, how="all")
 
@@ -90,6 +140,9 @@ def get_notifications(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_notifications([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("notifications_info", years, disease, limit, verbose)
 
@@ -114,6 +167,9 @@ def get_personal_data(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_personal_data([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("personal_data", years, disease, limit, verbose)
 
@@ -138,6 +194,9 @@ def get_clinical_signs(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_clinical_signs([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("clinical_signs", years, disease, limit, verbose)
 
@@ -162,6 +221,9 @@ def get_patient_diseases(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_patient_diseases([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("patient_diseases", years, disease, limit, verbose)
 
@@ -186,6 +248,9 @@ def get_exams(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_exams([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("exams", years, disease, limit, verbose)
 
@@ -210,6 +275,9 @@ def get_hospital_info(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_hospital_info([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("hospital_info", years, disease, limit, verbose)
 
@@ -234,6 +302,9 @@ def get_alarm_severities(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_alarm_severities([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("alarms_severities", years, disease, limit, verbose)
 
@@ -258,5 +329,8 @@ def get_sinan_info(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_sinan_info([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("sinan_internal_info", years, disease, limit, verbose)

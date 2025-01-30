@@ -6,9 +6,9 @@ from typing import Union
 
 import duckdb
 import pandas as pd
-from pysus.ftp.databases.sinan import SINAN # type: ignore
+from pysus.ftp.databases.sinan import SINAN  # type: ignore
 
-from dq_sus.utils.config import DB_PATH, PARQUET_PATH
+from pyzdc.utils.config import DB_PATH, PARQUET_PATH
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -27,6 +27,7 @@ class Extractor:
 
         insert_parquet_to_duck(files: list[Path]) -> None:
     """
+
     def __init__(self, db_path: Path = DB_PATH, parquet_path: Path = PARQUET_PATH):
         """
         Initialize the Extractor with paths for the DuckDB database and Parquet files.
@@ -37,13 +38,12 @@ class Extractor:
         """
         self.db_path = db_path
         self.parquet_path = parquet_path
-        
+
         if not self.db_path.exists():
             logging.info(f"Ensuring the database path exists: {self.db_path}")
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
             self.db_path.touch(exist_ok=True)
             logging.info(f"Database file created at {self.db_path}")
-            
 
     def extract_parquet(self, disease: str, years: Union[int, list[int]]) -> list[Path]:
         """

@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from dq_sus.get_info.get_info import (
+from pyzdc.get_info.get_info import (
     get_alarm_severities,
     get_clinical_signs,
     get_exams,
@@ -19,10 +19,10 @@ from dq_sus.get_info.get_info import (
 @pytest.fixture
 def mock_extractors() -> dict:  # type: ignore
     with (
-        patch("dq_sus.get_info.get_info.Extractor") as MockExtractor,
-        patch("dq_sus.get_info.get_info.ColumnTransformer") as MockColumnTransformer,
-        patch("dq_sus.get_info.get_info.DBTransformer") as MockDBTransformer,
-        patch("dq_sus.get_info.get_info.Loader") as MockLoader,
+        patch("pyzdc.get_info.get_info.Extractor") as MockExtractor,
+        patch("pyzdc.get_info.get_info.ColumnTransformer") as MockColumnTransformer,
+        patch("pyzdc.get_info.get_info.DBTransformer") as MockDBTransformer,
+        patch("pyzdc.get_info.get_info.Loader") as MockLoader,
     ):
         mock_extractor = MockExtractor.return_value
         mock_column_transformer = MockColumnTransformer.return_value
