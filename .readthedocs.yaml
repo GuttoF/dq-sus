@@ -8,10 +8,9 @@ build:
   tools:
     python: "3.12"
 
-jobs:
-  post_create_env:
-    - python -m pip install --upgrade pip
-    - pip install uv
+  jobs:
+    post_create_environment:
+      - pip install uv
 
-  post_install:
-    - uv sync --extra doc
+    post_install:
+      - UV_PROJECT_ENVIRONMENT=$READTHEDOCS_VIRTUALENV_PATH uv sync --extra doc --link-mode=copy
