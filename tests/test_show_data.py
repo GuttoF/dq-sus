@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 from unittest.mock import MagicMock, patch
 
-from dq_sus.load.show_data import Loader
+from pyzdc.load.show_data import Loader
 
 
 @pytest.fixture

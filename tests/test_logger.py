@@ -1,6 +1,6 @@
 import logging
 
-from dq_sus.utils.logger import setup_logging
+from pyzdc.utils.logger import setup_logging
 from typing import Optional
 
 def test_setup_logging() -> None:

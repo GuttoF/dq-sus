@@ -3,7 +3,7 @@ from pathlib import Path
 
 import duckdb
 
-from dq_sus.utils.config import DB_PATH
+from pyzdc.utils.config import DB_PATH
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

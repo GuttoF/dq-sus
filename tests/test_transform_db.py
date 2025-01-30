@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 import duckdb
 import pytest
 
-from dq_sus.transform.transform_db import DBTransformer
+from pyzdc.transform.transform_db import DBTransformer
 
 
 @pytest.fixture
