@@ -4,10 +4,11 @@
         "load",
         "transformation",
         "module",
-        "database"
+        "database",
+        "tests"
     ],
     "python.testing.pytestArgs": [
-        "dq_sus"
+        "pyzdc"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true

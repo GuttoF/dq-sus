@@ -78,7 +78,9 @@ def get_data_from_table(
     if no data is available.
 
     Example:
-        df = get_data_from_table("notifications_info", [2021, 2022], "DENG", limit=100, verbose=True)
+        df = get_data_from_table(
+            "notifications_info", [2021, 2022], "DENG", limit=100, verbose=True
+        )
     """
     if not verbose:
         logging.disable(logging.CRITICAL)

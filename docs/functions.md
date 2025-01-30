@@ -1,7 +1,5 @@
 # **How to Use PyZDC**
 
-
-
 ::: pyzdc.get_info.get_info
 
 ---

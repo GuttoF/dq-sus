@@ -19,8 +19,8 @@ def test_invalid_disease(extractor: Extractor) -> None:
         extractor.extract_parquet("INVALID", 2022)
 
 
-@patch("dq_sus.extract.get_raw.pd.read_parquet")
-@patch("dq_sus.extract.get_raw.duckdb.connect")
+@patch("pyzdc.extract.get_raw.pd.read_parquet")
+@patch("pyzdc.extract.get_raw.duckdb.connect")
 def test_insert_parquet_to_duck(
     mock_connect: MagicMock, mock_read_parquet: MagicMock, extractor: Extractor
 ) -> None:
@@ -40,8 +40,8 @@ def test_insert_parquet_to_duck(
     mock_conn.close.assert_called_once()
 
 
-@patch("dq_sus.extract.get_raw.shutil.rmtree")
-@patch("dq_sus.extract.get_raw.SINAN")
+@patch("pyzdc.extract.get_raw.shutil.rmtree")
+@patch("pyzdc.extract.get_raw.SINAN")
 def test_extract_parquet_pysus_removal_error(
     mock_sinan: MagicMock, mock_rmtree: MagicMock, extractor: Extractor
 ) -> None:
@@ -61,9 +61,9 @@ def test_extract_parquet_pysus_removal_error(
     mock_rmtree.assert_called_once_with(pysus_path)
 
 
-@patch("dq_sus.extract.get_raw.os.remove")
-@patch("dq_sus.extract.get_raw.duckdb.connect")
-@patch("dq_sus.extract.get_raw.pd.read_parquet")
+@patch("pyzdc.extract.get_raw.os.remove")
+@patch("pyzdc.extract.get_raw.duckdb.connect")
+@patch("pyzdc.extract.get_raw.pd.read_parquet")
 def test_insert_parquet_to_duck_overwrite_db(
     mock_read_parquet: MagicMock,
     mock_connect: MagicMock,
@@ -82,14 +82,14 @@ def test_insert_parquet_to_duck_overwrite_db(
     mock_conn.close.assert_called_once()
 
 
-@patch("dq_sus.extract.get_raw.Path.exists", side_effect=[False, False, True])
-@patch("dq_sus.extract.get_raw.shutil.rmtree")
-@patch("dq_sus.extract.get_raw.SINAN")
+@patch("pyzdc.extract.get_raw.Path.exists", side_effect=[False, False, True])
+@patch("pyzdc.extract.get_raw.shutil.rmtree")
+@patch("pyzdc.extract.get_raw.SINAN")
 def test_extract_parquet_multiple_years(
     mock_sinan: MagicMock,
     mock_rmtree: MagicMock,
     mock_exists: MagicMock,
-    extractor: Extractor
+    extractor: Extractor,
 ) -> None:
     mock_sinan_instance = MagicMock()
     mock_sinan.return_value = mock_sinan_instance
@@ -105,7 +105,7 @@ def test_extract_parquet_multiple_years(
     mock_rmtree.assert_called_once_with(Path.home() / "pysus")
 
 
-@patch("dq_sus.extract.get_raw.SINAN")
+@patch("pyzdc.extract.get_raw.SINAN")
 def test_extract_parquet_download_error(
     mock_sinan: MagicMock, extractor: Extractor
 ) -> None:
@@ -118,14 +118,14 @@ def test_extract_parquet_download_error(
         extractor.extract_parquet("DENG", 2023)
 
 
-@patch("dq_sus.extract.get_raw.os.remove")
-@patch("dq_sus.extract.get_raw.duckdb.connect")
-@patch("dq_sus.extract.get_raw.Path.mkdir")
+@patch("pyzdc.extract.get_raw.os.remove")
+@patch("pyzdc.extract.get_raw.duckdb.connect")
+@patch("pyzdc.extract.get_raw.Path.mkdir")
 def test_insert_parquet_to_duck_create_db_dir(
     mock_mkdir: MagicMock,
     mock_connect: MagicMock,
     mock_remove: MagicMock,
-    extractor: Extractor
+    extractor: Extractor,
 ) -> None:
     with patch("pathlib.Path.exists", side_effect=[False, True, True]):
         extractor.insert_parquet_to_duck([Path("/tmp/parquet/DENG.parquet")])
@@ -135,7 +135,7 @@ def test_insert_parquet_to_duck_create_db_dir(
     mock_connect.assert_called_once()
 
 
-@patch("dq_sus.extract.get_raw.SINAN")
+@patch("pyzdc.extract.get_raw.SINAN")
 def test_extract_parquet_existing_file(
     mock_sinan: MagicMock, extractor: Extractor
 ) -> None:
