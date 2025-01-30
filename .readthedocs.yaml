@@ -13,4 +13,4 @@ build:
       - pip install uv
 
     post_install:
-      - uv sync --extra doc
+      - uv sync --all-extras
