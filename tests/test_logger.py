@@ -1,7 +1,8 @@
 import logging
+from typing import Optional
 
 from pyzdc.utils.logger import setup_logging
-from typing import Optional
+
 
 def test_setup_logging() -> None:
     for handler in logging.root.handlers[:]:
@@ -19,7 +20,7 @@ def test_setup_logging() -> None:
 
     logger.setLevel(logging.INFO)
     assert isinstance(logger, logging.Logger)
-    assert logger.name == "dq_sus.utils.logger"
+    assert logger.name == "pyzdc.utils.logger"
     assert logger.level == logging.INFO
     assert len(logger.handlers) > 0
 
