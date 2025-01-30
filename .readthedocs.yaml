@@ -10,7 +10,7 @@ build:
 
   jobs:
     post_create_environment:
-      - python -m pip install --upgrade --no-cache-dir mkdocs-material
-      - python -m pip install --upgrade --no-cache-dir mkdocs-mermaid2-plugin
-      - python -m pip install --upgrade --no-cache-dir mkdocstrings
-      - python -m pip install --upgrade --no-cache-dir mkdocstrings-python
+      - pip install uv
+
+    post_install:
+      - UV_PROJECT_ENVIRONMENT=$READTHEDOCS_VIRTUALENV_PATH uv sync --extra doc --link-mode=copy
