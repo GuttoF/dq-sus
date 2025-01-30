@@ -21,6 +21,9 @@ def get_years(disease: str = "CHIK") -> None:
     Returns:
         str: Error message if an invalid disease is provided.
         str: Message listing the available years for the specified disease.
+
+    Example:
+        get_years("DENG")
     """
 
     sinan = SINAN().load()
@@ -42,9 +45,7 @@ def get_years(disease: str = "CHIK") -> None:
     available_disease = valid_diseases[disease]
     if years:
         available_years = (
-            f"from {years[0]} to {years[-1]}"
-            if len(years) > 1
-            else f"in {years[0]}"
+            f"from {years[0]} to {years[-1]}" if len(years) > 1 else f"in {years[0]}"
         )
     else:
         available_years = "no available data"
@@ -75,6 +76,9 @@ def get_data_from_table(
     Returns:
     pd.DataFrame: The processed data as a pandas DataFrame. Returns an empty DataFrame
     if no data is available.
+
+    Example:
+        df = get_data_from_table("notifications_info", [2021, 2022], "DENG", limit=100, verbose=True)
     """
     if not verbose:
         logging.disable(logging.CRITICAL)
@@ -134,6 +138,9 @@ def get_notifications(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_notifications([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("notifications_info", years, disease, limit, verbose)
 
@@ -158,6 +165,9 @@ def get_personal_data(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_personal_data([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("personal_data", years, disease, limit, verbose)
 
@@ -182,6 +192,9 @@ def get_clinical_signs(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_clinical_signs([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("clinical_signs", years, disease, limit, verbose)
 
@@ -206,6 +219,9 @@ def get_patient_diseases(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_patient_diseases([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("patient_diseases", years, disease, limit, verbose)
 
@@ -230,6 +246,9 @@ def get_exams(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_exams([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("exams", years, disease, limit, verbose)
 
@@ -254,6 +273,9 @@ def get_hospital_info(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_hospital_info([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("hospital_info", years, disease, limit, verbose)
 
@@ -278,6 +300,9 @@ def get_alarm_severities(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_alarm_severities([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("alarms_severities", years, disease, limit, verbose)
 
@@ -302,5 +327,8 @@ def get_sinan_info(
 
     Returns:
         pd.DataFrame: DataFrame containing the notification data.
+
+    Example:
+        df = get_sinan_info([2021, 2022], "DENG", limit=100, verbose=True)
     """
     return get_data_from_table("sinan_internal_info", years, disease, limit, verbose)
