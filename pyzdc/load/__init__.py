@@ -10,6 +10,6 @@ from .refresh_data import Refresher
 
 __all__ = ["Loader", "Refresher"]
 
-__version__ = "0.5.0"
+__version__ = "0.6.1"
 __author__ = "Gutto França"
 __email__ = "guttolaudie@gmail.com"
