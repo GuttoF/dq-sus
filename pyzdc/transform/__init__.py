@@ -13,6 +13,6 @@ from .transform_db import DBTransformer
 
 __all__ = ["ColumnTransformer", "DBTransformer"]
 
-__version__ = "0.5.0"
+__version__ = "0.6.1"
 __author__ = "Gutto França"
 __email__ = "guttolaudie@gmail.com"
