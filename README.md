@@ -1,7 +1,8 @@
 # PyZDC
 
-[![CI](https://img.shields.io/github/actions/workflow/status/GuttoF/dq-sus/ci.yaml?branch=main&logo=github&label=CI)](https://github.com/GuttoF/dq-sus/actions?query=event%3Apush+branch%3Amain+workflow%3ACI)
-[![License](https://img.shields.io/github/license/GuttoF/dq-sus.svg)](https://github.com/GuttoF/dq-sus/blob/main/LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/GuttoF/dq-sus/ci.yaml?branch=main&logo=github&label=CI)](https://github.com/GuttoF/pyzdc/actions?query=event%3Apush+branch%3Amain+workflow%3ACI)
+[![License](https://img.shields.io/github/license/GuttoF/dq-sus.svg)](https://github.com/GuttoF/pyzdc/blob/main/LICENSE)
+[![CI](https://github.com/GuttoF/pyzdc/actions/workflows/ci.yaml/badge.svg)](https://github.com/Guttof/pyzdc/actions/workflows/ci.yaml)
 
 **PyZDC** is a Python tool designed to simplify the analysis of epidemiological data related to the **Aedes aegypti**, focusing on diseases such as **Dengue**, **Zika**, and **Chikungunya**. It is fast, extensible, and easy to use.
 
@@ -67,7 +68,7 @@ This will output something like:
 
 ## **Help**
 
-For more information, see the [documentation](https://github.com/GuttoF/dq-sus).
+For more information, see the [documentation](https://pyzdc.readthedocs.io/en/latest/).
 
 ---
 
