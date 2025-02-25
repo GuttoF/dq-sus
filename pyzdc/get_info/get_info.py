@@ -1,6 +1,6 @@
 import logging
 import re
-
+from duckdb import CatalogException  # type: ignore
 import pandas as pd
 from pysus.ftp.databases.sinan import SINAN  # type: ignore
 
@@ -93,7 +93,22 @@ def get_data_from_table(
         db_refresher = Refresher()
 
         db_refresher.delete_database()
+        
+        sinan = SINAN().load()
+        available_years = sorted(
+            int(match.group(1)) + 2000
+            for file in sinan.get_files(dis_code=[disease])
+            if (match := re.search(r"BR(\d{2})", str(file)))
+        )
+        
+        unavailable_years = [year for year in years if year not in available_years]
+        if unavailable_years:
+            raise ValueError(f"The following years are not available for disease {disease}: {unavailable_years}")
+        
         files = extractor.extract_parquet(disease, years)
+        if not files:
+            raise ValueError(f"No data found for disease {disease} in years {years}")
+        
         extractor.insert_parquet_to_duck(files)
         column_transformer.rename_db_columns()
         db_transformer.transform_db()
@@ -113,6 +128,12 @@ def get_data_from_table(
                 "No data available: All rows are empty or null after filtering."
             )
             return pd.DataFrame()
+    except CatalogException as ce:
+        if "Table with name sinan does not exist" in str(ce):
+            raise ValueError(f"No data found for disease {disease} in years {years}") from ce
+        raise
+    except Exception as e:
+        raise ValueError(f"Error processing data: {str(e)}") from e
     finally:
         if not verbose:
             logging.disable(logging.NOTSET)
