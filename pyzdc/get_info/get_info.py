@@ -1,5 +1,6 @@
 import logging
 import re
+from typing import Dict, List
 
 import pandas as pd
 from duckdb import CatalogException  # type: ignore
@@ -11,6 +12,13 @@ from pyzdc.transform import ColumnTransformer, DBTransformer
 from pyzdc.utils.decorators import validate_verbose
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
+
+
+VALID_DISEASES: Dict[str, str] = {
+    "ZIKA": "Zika",
+    "DENG": "Dengue",
+    "CHIK": "Chikungunya",
+}
 
 
 def get_years(disease: str = "CHIK") -> None:
@@ -56,9 +64,9 @@ def get_years(disease: str = "CHIK") -> None:
 
 
 @validate_verbose
-def get_data_from_table(
+def get_data_from_table( # noqa: C901
     table_name: str,
-    years: list[int] = [2022, 2023],
+    years: List[int] = [2022, 2023],
     disease: str = "CHIK",
     limit: int | None = None,
     verbose: bool = False,
@@ -89,6 +97,14 @@ def get_data_from_table(
         logging.disable(logging.CRITICAL)
 
     try:
+        if disease not in VALID_DISEASES:
+            valid_options = ", ".join(
+                [f"{code}: {name}" for code, name in VALID_DISEASES.items()]
+            )
+            raise ValueError(
+                f"Invalid disease code '{disease}'. Valid options are: {valid_options}"
+            )
+
         extractor = Extractor()
         column_transformer = ColumnTransformer()
         db_transformer = DBTransformer()
@@ -134,6 +150,15 @@ def get_data_from_table(
                 "No data available: All rows are empty or null after filtering."
             )
             return pd.DataFrame()
+    except ValueError as e:
+        if "Unknown disease(s)" in str(e):
+            valid_options = ", ".join(
+                [f"{code}: {name}" for code, name in VALID_DISEASES.items()]
+            )
+            raise ValueError(
+                f"Invalid disease code. Valid options are: {valid_options}"
+            ) from None
+        raise
     except CatalogException as ce:
         if "Table with name sinan does not exist" in str(ce):
             raise ValueError(
