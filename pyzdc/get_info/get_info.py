@@ -1,14 +1,24 @@
 import logging
 import re
+from typing import Dict, List
 
 import pandas as pd
+from duckdb import CatalogException  # type: ignore
 from pysus.ftp.databases.sinan import SINAN  # type: ignore
 
 from pyzdc.extract import Extractor
 from pyzdc.load import Loader, Refresher
 from pyzdc.transform import ColumnTransformer, DBTransformer
+from pyzdc.utils.decorators import validate_verbose
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
+
+
+VALID_DISEASES: Dict[str, str] = {
+    "ZIKA": "Zika",
+    "DENG": "Dengue",
+    "CHIK": "Chikungunya",
+}
 
 
 def get_years(disease: str = "CHIK") -> None:
@@ -53,9 +63,10 @@ def get_years(disease: str = "CHIK") -> None:
     return print(f"The available data for {available_disease} is {available_years}.")
 
 
-def get_data_from_table(
+@validate_verbose
+def get_data_from_table( # noqa: C901
     table_name: str,
-    years: list[int] = [2022, 2023],
+    years: List[int] = [2022, 2023],
     disease: str = "CHIK",
     limit: int | None = None,
     verbose: bool = False,
@@ -86,6 +97,14 @@ def get_data_from_table(
         logging.disable(logging.CRITICAL)
 
     try:
+        if disease not in VALID_DISEASES:
+            valid_options = ", ".join(
+                [f"{code}: {name}" for code, name in VALID_DISEASES.items()]
+            )
+            raise ValueError(
+                f"Invalid disease code '{disease}'. Valid options are: {valid_options}"
+            )
+
         extractor = Extractor()
         column_transformer = ColumnTransformer()
         db_transformer = DBTransformer()
@@ -93,7 +112,25 @@ def get_data_from_table(
         db_refresher = Refresher()
 
         db_refresher.delete_database()
+
+        sinan = SINAN().load()
+        available_years = sorted(
+            int(match.group(1)) + 2000
+            for file in sinan.get_files(dis_code=[disease])
+            if (match := re.search(r"BR(\d{2})", str(file)))
+        )
+
+        unavailable_years = [year for year in years if year not in available_years]
+        if unavailable_years:
+            raise ValueError(
+                f"The following years are not available for disease {disease}: "
+                f"{unavailable_years}"
+            )
+
         files = extractor.extract_parquet(disease, years)
+        if not files:
+            raise ValueError(f"No data found for disease {disease} in years {years}")
+
         extractor.insert_parquet_to_duck(files)
         column_transformer.rename_db_columns()
         db_transformer.transform_db()
@@ -113,6 +150,23 @@ def get_data_from_table(
                 "No data available: All rows are empty or null after filtering."
             )
             return pd.DataFrame()
+    except ValueError as e:
+        if "Unknown disease(s)" in str(e):
+            valid_options = ", ".join(
+                [f"{code}: {name}" for code, name in VALID_DISEASES.items()]
+            )
+            raise ValueError(
+                f"Invalid disease code. Valid options are: {valid_options}"
+            ) from None
+        raise
+    except CatalogException as ce:
+        if "Table with name sinan does not exist" in str(ce):
+            raise ValueError(
+                f"No data found for disease {disease} in years {years}"
+            ) from ce
+        raise
+    except Exception as e:
+        raise ValueError(f"Error processing data: {str(e)}") from e
     finally:
         if not verbose:
             logging.disable(logging.NOTSET)
@@ -120,6 +174,7 @@ def get_data_from_table(
     return data
 
 
+@validate_verbose
 def get_notifications(
     years: list[int] = [2022, 2023],
     disease: str = "CHIK",
@@ -147,6 +202,7 @@ def get_notifications(
     return get_data_from_table("notifications_info", years, disease, limit, verbose)
 
 
+@validate_verbose
 def get_personal_data(
     years: list[int] = [2022, 2023],
     disease: str = "CHIK",
@@ -174,6 +230,7 @@ def get_personal_data(
     return get_data_from_table("personal_data", years, disease, limit, verbose)
 
 
+@validate_verbose
 def get_clinical_signs(
     years: list[int] = [2022, 2023],
     disease: str = "CHIK",
@@ -201,6 +258,7 @@ def get_clinical_signs(
     return get_data_from_table("clinical_signs", years, disease, limit, verbose)
 
 
+@validate_verbose
 def get_patient_diseases(
     years: list[int] = [2022, 2023],
     disease: str = "CHIK",
@@ -228,6 +286,7 @@ def get_patient_diseases(
     return get_data_from_table("patient_diseases", years, disease, limit, verbose)
 
 
+@validate_verbose
 def get_exams(
     years: list[int] = [2022, 2023],
     disease: str = "CHIK",
@@ -255,6 +314,7 @@ def get_exams(
     return get_data_from_table("exams", years, disease, limit, verbose)
 
 
+@validate_verbose
 def get_hospital_info(
     years: list[int] = [2022, 2023],
     disease: str = "CHIK",
@@ -282,6 +342,7 @@ def get_hospital_info(
     return get_data_from_table("hospital_info", years, disease, limit, verbose)
 
 
+@validate_verbose
 def get_alarm_severities(
     years: list[int] = [2022, 2023],
     disease: str = "CHIK",
@@ -309,6 +370,7 @@ def get_alarm_severities(
     return get_data_from_table("alarms_severities", years, disease, limit, verbose)
 
 
+@validate_verbose
 def get_sinan_info(
     years: list[int] = [2022, 2023],
     disease: str = "CHIK",
